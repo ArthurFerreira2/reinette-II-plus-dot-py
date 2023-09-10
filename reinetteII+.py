@@ -1,6 +1,6 @@
 import sys
 import ctypes
-from sdl2 import *                                                              # pip install pysdl2
+from sdl2 import *                                                              # pip install pysdl2 pysdl2-dll
 import puce6502, memory, keyctrl, screen, speaker, paddle, disk
 
 
@@ -73,8 +73,8 @@ while running :
         ctrl  = SDL_GetModState() & KMOD_CTRL
         shift = SDL_GetModState() & KMOD_SHIFT
 
-        paddle0.setButton(ctrl)                                                 # update push button 0 state
-        paddle1.setButton(alt)                                                  # update push button 1 state
+        paddle0.setButton(alt)                                                  # update push button 0 state
+        paddle1.setButton(ctrl)                                                 # update push button 1 state
 
         #================================================== QUIT ON WINDOW CLOSE
 
