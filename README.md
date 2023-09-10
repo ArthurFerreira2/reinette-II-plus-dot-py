@@ -22,7 +22,7 @@ A - Well, you just need python 3 and run **pip install pySDL2** to install the g
     On windows, you can rename 'reinetteII+.py' to 'reinetteII+.pyw' and double click on it to launch it from explorer  
 
 J - Well, I have a dark screen with Apple II printed on top, what's next ?  
-A - This is how the apple II plus starts - you can press reset (F11) to get to the APPLESOFT prompt of drag and drop a floppy image (.nib only) and wait it loads the programm from floppy.  
+A - This is how the apple II plus starts - you can press reset (F11) to get to the APPLESOFT prompt or drag and drop a floppy image (.nib only) and wait it loads the programm from floppy.  
 
 J - Jeez, that's pretty neat !  
 A - I Hope you won't spend all your time playing ... I wrote it for you to read it - I spent a lot commenting the code.  
@@ -36,10 +36,10 @@ A - Yes, look :
 ![screenshots](assets/screenshots.png)
 
 J - That's wonderfull, I see I can adjust the FPS ?  
-A - Yep, that part is still experimental - you should'nt need it, unless you experience slow frame rates  
+A - Yep, that part is still experimental - you should'nt need it, unless you experience slow frame rates.  
     Did you noticed you can resize the screen ?  
 
-J - Yes, I prefer the x2 size on my laptop, I have a note pad on the left to write APPLESOFT programs and I copy and paste (F3) them on the emulator to test them  
+J - Yes, I prefer the x2 size on my laptop, I have a note pad on the left to write APPLESOFT programs and I copy and paste (F3) them on the emulator.  
 A - yes, that's exactly how it is meant to be used - enjoy !  
 
 
