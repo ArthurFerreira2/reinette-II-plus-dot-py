@@ -17,7 +17,7 @@ J - I can't believe - does it support games ?
 A - Yes, it uses the SDL2 library for video and sound  
 
 J - How can I test it ?  
-A - Well, you just need python 3 and run **pip install pySDL2** to install the graphics library  
+A - Well, you just need python 3 and run **pip install pySDL2 pysdl2-dll** to install the graphics library  
     Then, open a terminal and type : **python reinetteII+.py**  
     On windows, you can rename 'reinetteII+.py' to 'reinetteII+.pyw' and double click on it to launch it from explorer  
 
@@ -45,15 +45,11 @@ A - yes, that's exactly how it is meant to be used - enjoy !
 
 ## In summary,
 
-Get python, then install pySDL2 
-```
-pip install pySDL2
-```
-and run the emulator using :
-```
-python3 reinetteII+.py <optional nib file>
-```
-Then, drag'n'drop a .nib file to *insert a floppy in the drive* or press reset (F11) to get to the APPLESOFT prompt
+Get python, then install pySDL2   
+```pip install pySDL2 pysdl2-dll```  
+and run the emulator using :  
+```python3 reinetteII+.py <optional nib file>```  
+Then, drag'n'drop a .nib file to *insert a floppy in the drive* or press reset (F11) to get to the APPLESOFT prompt  
 
 
 | key  | action                             |
@@ -72,7 +68,7 @@ Then, drag'n'drop a .nib file to *insert a floppy in the drive* or press reset (
 | F12  | power cycle                        | 
 
 
-Joystick is emulated using the 1,2,3 and 5 keys on the numpad and CTRL and ALT for the buttons  
+Joystick is emulated using the 1,2,3 and 5 keys on the numpad and CTRL and ALT for the buttons    
 
 
-**Please start it if you like. Cheers**
+**Please start it if you like. Cheers**  

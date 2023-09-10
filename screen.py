@@ -1,4 +1,4 @@
-from sdl2 import *                                                              # pip install pysdl2
+from sdl2 import *                                                              # pip install pysdl2-dll
 import ctypes
 from datetime import datetime
 
