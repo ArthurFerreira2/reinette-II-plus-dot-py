@@ -84,11 +84,11 @@ class Screen() :
         self.zoom = 2
         self.monochrome = False
 
-        self.FPS = 15.0
+        self.FPS = 20.0
         self.frameStart = 0
         self.frameNumber = 0                                                     # TEXT cursor flashes at 2Hz
 
-        self.title = {"name"   : "Apple Py    ",                                # update the window title with dynamic data
+        self.title = {"name"   : "reinette II plus dot py    ",                                # update the window title with dynamic data
                       "paused" : "",
                       "fps"    : "0" ,
                       "r/w"    : "",
@@ -97,7 +97,7 @@ class Screen() :
         #==================================================== SDL INITIALIZATION
 
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)
-        self.wdo = SDL_CreateWindow(b"Apple Py",
+        self.wdo = SDL_CreateWindow(b"reinette II plus dot py",
                                     SDL_WINDOWPOS_CENTERED,
                                     SDL_WINDOWPOS_CENTERED,
                                     280 * self.zoom, 192 * self.zoom,
@@ -108,7 +108,7 @@ class Screen() :
         SDL_SetWindowIcon(self.wdo, self.ico)
 
         self.rdr = SDL_CreateRenderer(self.wdo, -1,
-                                     SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)
+                                     SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC)
 
         # SDL_SetRenderDrawBlendMode(self.rdr, SDL_BLENDMODE_NONE)
         SDL_SetRenderDrawBlendMode(self.rdr, SDL_BLENDMODE_BLEND)

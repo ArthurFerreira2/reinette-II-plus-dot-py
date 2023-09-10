@@ -5,9 +5,9 @@ import puce6502, memory, keyctrl, screen, speaker, paddle, disk
 
 
 helpMsg = b"""
-        Reinette II plus
+          reinette II plus dot py
 
-drag'n'drop a .nib file to load a floppy
+Drag'n'drop a .nib file to load a floppy
 
 F1   : this help
 F2   : take a screenshot
@@ -22,7 +22,7 @@ F10  : toggle pause
 F11  : here is your RESET key
 F12  : power cycle
 
-joystick : 1,2,3 and 5 on keypad.
+Joystick : 1,2,3 and 5 on keypad.
            CTRL and ALT for the buttons
 
 
