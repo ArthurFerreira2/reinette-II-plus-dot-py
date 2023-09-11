@@ -71,4 +71,4 @@ Then, drag'n'drop a .nib file to *insert a floppy in the drive* or press reset (
 Joystick is emulated using the 1,2,3 and 5 keys on the numpad and CTRL and ALT for the buttons    
 
 
-**Please start it if you like. Cheers**  
+**Please star it if you like. Cheers**  
