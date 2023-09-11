@@ -84,15 +84,15 @@ class Screen() :
         self.zoom = 2
         self.monochrome = False
 
-        self.FPS = 20.0
+        self.FPS = 60.0
         self.frameStart = 0
         self.frameNumber = 0                                                     # TEXT cursor flashes at 2Hz
 
-        self.title = {"name"   : "reinette II plus dot py    ",                                # update the window title with dynamic data
-                      "paused" : "",
-                      "fps"    : "0" ,
+        self.title = {"paused" : False,                                         # update the window title with dynamic data
+                      "fps"    : self.FPS,
                       "r/w"    : "",
                       }
+        self.titleFade = 30
 
         #==================================================== SDL INITIALIZATION
 
@@ -200,22 +200,21 @@ class Screen() :
     def setWindowTitle(self, attribute, value) :
         self.title[attribute] = value                                           # update the attribute
         if attribute == "r/w" :
-            self.title["fade"] = 15
+            self.titleFade = 30
+
 
     def updateWindowTitle(self) :
-        title = self.title["name"]
-
-        if self.title["paused"] != "":
-            title += self.title["paused"]
-            SDL_SetWindowTitle(self.wdo,  bytes(title, 'ascii'))
+        if self.title["paused"] :
+            title = 'reinette II plus dot py    *PAUSED*'
+            SDL_SetWindowTitle(self.wdo, bytes(title, 'ascii'))
             return
 
-        title += self.title["fps"] + self.title["r/w"]
-        # self.title["fade"] -= 1
-        # if self.title["fade"] < 0 :
-        self.title["r/w"] = ""
+        self.titleFade -= 1
+        if self.titleFade < 0 :
+            self.title["r/w"] = ""
 
-        SDL_SetWindowTitle(self.wdo,  bytes(title, 'ascii'))
+        title = f"reinette II plus dot py    {self.title['fps']:05.2f}   {self.title['r/w']}"
+        SDL_SetWindowTitle(self.wdo, bytes(title, 'ascii'))
 
     #============================================== TOGGLE MONOCHROME (HGR ONLY)
 
@@ -243,7 +242,7 @@ class Screen() :
 
         #===================================================== CLEAR VIDEO CACHE
 
-        if self.oldMode != self.currentMode :                                   # Clear the video caches on video mode change
+        if self.oldMode != self.currentMode :                                   # Clear the video caches for video mode change
             self.TextCache   = [[-1 for x in range(40)] for y in range( 24)]
             self.LoResCache  = [[-1 for x in range(40)] for y in range( 24)]
             self.HiResCache  = [[-1 for x in range(40)] for y in range(192)]
@@ -296,9 +295,9 @@ class Screen() :
                             bit += 1
                             even = 0 if even else 8                             # one pixel every other is darker
 
-                        if (col < 37) :                                         # check color franging effect on the dot after
-                            self.previousBit[line][col + 2] = pbit              # set pbit and clear the
-                            self.HiResCache[line][col + 2] = -1                 # video cache for next dot
+                        if col < 37 and self.previousBit[line][col+2] != pbit : # check color franging effect on next dot
+                            self.previousBit[line][col + 2] = pbit              # set pbit
+                            self.HiResCache[line][col + 2] = -1                 # invalidate video cache for the next dot
 
         #========================================================== GR VIDEO OUT
 
@@ -338,6 +337,7 @@ class Screen() :
         if self.TEXT or self.MIXED :                                            # TEXT 40 COLUMNS, can be mixed with lo or hi res
             vRamBase = 0x400 + self.PAGE2 * 0x0400
             firstLine = 0 if self.TEXT else 20
+            self.frameNumber = (self.frameNumber + 1) % self.FPS                # for flashing characters (including the cursor)
             flashing = self.frameNumber % self.FPS > self.FPS / 2               # flashing on phase
 
             for col in range(0, 40) :                                           # for each column
@@ -368,17 +368,14 @@ class Screen() :
 
     #============================================= SYNC TO FPS AND RENDER SCREEN
 
-        self.frameNumber = (self.frameNumber + 1) % self.FPS                    # for flashing characters (including the cursor)
 
         frameTime = SDL_GetTicks() - self.frameStart                            # elapsed time since last call
-        frameDelay = 1000.0 / self.FPS                                          # target frame time for current FPS
+        frameDelay = 1000.0 / self.FPS                                          # theorical frame duration for targeted FPS
         if frameTime < frameDelay :
             SDL_Delay(int(frameDelay - frameTime))                              # wait until next 1/FPS sec is reached
 
+        self.setWindowTitle("fps", 1000.0 / (SDL_GetTicks() - self.frameStart)) # update the window title with the actual FPS
+        self.updateWindowTitle()
+        SDL_RenderPresent(self.rdr)                                             # render to screen
 
-        if not self.frameNumber % 4 :                                           # update the window title every quarter of a second
-            self.setWindowTitle("fps",f"{1000.0 / (SDL_GetTicks() - self.frameStart):05.2f}   ")
-            self.updateWindowTitle()
-
-        SDL_RenderPresent(self.rdr)                                             # swap buffers
         self.frameStart = SDL_GetTicks()                                        # start of frame

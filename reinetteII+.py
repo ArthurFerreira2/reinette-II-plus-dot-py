@@ -51,6 +51,7 @@ cpu = puce6502.Puce6502(mem.readMem, mem.writeMem)                              
 running = True
 paused  = False
 event = SDL_Event()
+ExecRate = 1023000 / screen.FPS                                         # the apple II is clocked at 1023000.0 Hz
 
 
 while running :
@@ -58,7 +59,6 @@ while running :
     #=================================================== PROCESS SOME CPU CYCLES
 
     if not paused :
-        ExecRate = 1023000 / screen.FPS                                         # the apple II is clocked at 1023000.0 Hz
         cpu.run(ExecRate)                                                       # execute ExecRate instructions for 1/FPS of a second
 
     #============================================================== UPDATE VIDEO
@@ -133,7 +133,7 @@ while running :
 
             elif event.key.keysym.sym == SDLK_F10 :
                 paused = not paused                                             # F10 -> toggle pause
-                screen.setWindowTitle("paused", "*PAUSED*" if paused else "")
+                screen.setWindowTitle("paused", paused)
 
             elif event.key.keysym.sym == SDLK_F11 :
                 cpu.rst()                                                       # F11 -> reset the cpu

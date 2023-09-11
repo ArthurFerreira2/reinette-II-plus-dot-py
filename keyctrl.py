@@ -1,4 +1,4 @@
-from sdl2 import keycode                                                        # pip install pysdl2
+from sdl2 import keycode
 
 class Keyctrl() :
 
