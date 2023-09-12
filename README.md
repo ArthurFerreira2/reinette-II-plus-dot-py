@@ -36,7 +36,7 @@ A - Yes, look :
 ![screenshots](assets/screenshots.png)
 
 J - That's wonderfull, I see I can adjust the FPS ?  
-A - Yep, that part is still experimental - you should'nt need it, unless you experience slow frame rates.  
+A - Yep, that part is still experimental - you shouldn't need it, unless you experience slow frame rates.  
     Did you noticed you can resize the screen ?  
 
 J - Yes, I prefer the x2 size on my laptop, I have a note pad on the left to write APPLESOFT programs and I copy and paste (F3) them on the emulator.  
