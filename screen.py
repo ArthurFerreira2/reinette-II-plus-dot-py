@@ -84,7 +84,7 @@ class Screen() :
         self.zoom = 2
         self.monochrome = False
 
-        self.FPS = 60.0
+        self.FPS = 30.0
         self.frameStart = 0
         self.frameNumber = 0                                                     # TEXT cursor flashes at 2Hz
 
@@ -103,19 +103,16 @@ class Screen() :
                                     280 * self.zoom, 192 * self.zoom,
                                     SDL_WINDOW_OPENGL)
 
-        # FIXME : icon transparency
         self.ico = SDL_LoadBMP(b"assets/icon.bmp")
         SDL_SetWindowIcon(self.wdo, self.ico)
 
         self.rdr = SDL_CreateRenderer(self.wdo, -1,
                                      SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC)
 
-        # SDL_SetRenderDrawBlendMode(self.rdr, SDL_BLENDMODE_NONE)
-        SDL_SetRenderDrawBlendMode(self.rdr, SDL_BLENDMODE_BLEND)
+        SDL_SetRenderDrawBlendMode(self.rdr, SDL_BLENDMODE_NONE)
         SDL_RenderSetScale(self.rdr, self.zoom, self.zoom)
         SDL_EventState(SDL_DROPFILE, SDL_ENABLE)
         SDL_RenderSetScale(self.rdr, self.zoom, self.zoom)
-
 
         #============================ LOAD NORMAL AND REVERSE CHARACTERS BITMAPS
 
@@ -128,7 +125,6 @@ class Screen() :
         SDL_FreeSurface(tmpSurface)
 
 
-
     #============================================= DESTRUCTOR : SDL2 TERMINATION
 
     def __del__(self):
@@ -138,6 +134,7 @@ class Screen() :
         SDL_DestroyWindow(self.wdo)
         SDL_AudioQuit()
         SDL_Quit()
+
 
     #======================= GETERS AND SETTERS FOR VIDEO RELATED SOFT SWITCHES
 
@@ -180,6 +177,7 @@ class Screen() :
     def getPAGE2(self) :
         return self.PAGE2
 
+
     #================================================================ SCREENSHOT
 
     def takeScreenshot(self):
@@ -194,6 +192,7 @@ class Screen() :
         d = datetime.now().strftime("%Y-%m-%d-%H-%M-%S").encode('ASCII')        # forge the filename
         SDL_SaveBMP(sshot, b"screenshots//" + d + b".bmp")                      # save under the screenshots folder
         SDL_FreeSurface(sshot)                                                  # release the surface
+
 
     #============================================================== WINDOW TITLE
 
@@ -216,11 +215,13 @@ class Screen() :
         title = f"reinette II plus dot py    {self.title['fps']:05.2f}   {self.title['r/w']}"
         SDL_SetWindowTitle(self.wdo, bytes(title, 'ascii'))
 
+
     #============================================== TOGGLE MONOCHROME (HGR ONLY)
 
     def toggleMonochrome(self) :
         self.monochrome = not self.monochrome
         self.oldMode = 9
+
 
     #============================================================= WINDOW RESIZE
 
@@ -242,14 +243,14 @@ class Screen() :
 
         #===================================================== CLEAR VIDEO CACHE
 
-        if self.oldMode != self.currentMode :                                   # Clear the video caches for video mode change
+        if self.oldMode != self.currentMode :                                   # Clear the video caches when video mode change
             self.TextCache   = [[-1 for x in range(40)] for y in range( 24)]
             self.LoResCache  = [[-1 for x in range(40)] for y in range( 24)]
             self.HiResCache  = [[-1 for x in range(40)] for y in range(192)]
             self.previousBit = [[ 0 for x in range(40)] for y in range(192)]
             self.oldMode = self.currentMode
 
-    #============================================================= HGR VIDEO OUT
+        #========================================================= HGR VIDEO OUT
 
         if not self.TEXT and self.HIRES :                                       # HIGH RES GRAPHICS, mixed or not mixed
             bits=[0] * 16
@@ -331,7 +332,6 @@ class Screen() :
                                                SDL_ALPHA_OPAQUE)
                         SDL_RenderFillRect(self.rdr, self.pixelGR)
 
-
         #======================================================== TEXT VIDEO OUT
 
         if self.TEXT or self.MIXED :                                            # TEXT 40 COLUMNS, can be mixed with lo or hi res
@@ -365,9 +365,7 @@ class Screen() :
                             SDL_RenderCopy(self.rdr, self.revCharTexture,
                                            self.charRects[glyph], self.dstRect)
 
-
     #============================================= SYNC TO FPS AND RENDER SCREEN
-
 
         frameTime = SDL_GetTicks() - self.frameStart                            # elapsed time since last call
         frameDelay = 1000.0 / self.FPS                                          # theorical frame duration for targeted FPS

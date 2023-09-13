@@ -152,8 +152,6 @@ class Puce6502() :
 
     """
 
-
-
     def run(self, cycleCount) :
         cycleCount += clock.ticks                                               # cycleCount becomes the target ticks value
         while (clock.ticks < cycleCount) :

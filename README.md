@@ -48,8 +48,8 @@ A - yes, that's exactly how it is meant to be used - enjoy !
 Get python, then install pySDL2   
 ```pip install pySDL2 pysdl2-dll```  
 and run the emulator using :  
-```python3 reinetteII+.py <optional nib file>```  
-Then, drag'n'drop a .nib file to *insert a floppy in the drive* or press reset (F11) to get to the APPLESOFT prompt  
+```python3 reinetteII+.py <optional .nib file>```  
+Then, drag'n'drop a .nib file to *insert a floppy into the drive* or press reset (F11) to get to the APPLESOFT prompt  
 
 
 | key  | action                             |

@@ -203,7 +203,7 @@ cpu.run(96240573)
 
     $ time python ./puce6502Tests.py
 
-    case match version :
+    match case version :
     real    0m43.328s
     user    0m0.015s
     sys     0m0.000s
@@ -215,7 +215,7 @@ cpu.run(96240573)
     sys     0m0.015s
 
 
-    if elif with binary search tree :
+    if elif with binary search tree deep 4 :
     real    0m23.438s
     user    0m0.000s
     sys     0m0.015s

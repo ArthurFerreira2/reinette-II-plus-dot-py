@@ -49,109 +49,116 @@ class Memory() :
 
             it complements both functions when address is in page $C0
         """
+        if address < 0xC080 :
+            if address < 0xC050 :
+                if (address == 0xC020) or (address == 0xC030) :                 # SPEAKER, TAPEOUT
+                    self.speaker.playSound()
+                elif address == 0xC000 :                                        # KEYBOARD
+                    return self.keyctrl.getKey()
+                elif address == 0xC010 :                                        # KBDSTROBE
+                    self.keyctrl.strobe()
+                    return self.keyctrl.getKey()
+            elif address < 0xC060 :
+                if address == 0xC050 :                                          # Graphics
+                    self.screen.setTEXT(False)
+                elif address == 0xC051 :                                        # Text
+                    self.screen.setTEXT(True)
+                elif address == 0xC052 :                                        # Mixed off
+                    self.screen.setMIXED(False)
+                elif address == 0xC053 :                                        # Mixed on
+                    self.screen.setMIXED(True)
+                elif address == 0xC054 :                                        # PAGE2 off
+                    self.screen.setPAGE2(False)
+                elif address == 0xC055 :                                        # PAGE2 on
+                    self.screen.setPAGE2(True)
+                elif address == 0xC056 :                                        # HiRes off
+                    self.screen.setHIRES(False)
+                elif address == 0xC057 :                                        # HiRes on
+                    self.screen.setHIRES(True)
+            else:
+                if address == 0xC061 :                                          # Push Button 0
+                    return self.paddle0.getButton()
+                elif address == 0xC062 :                                        # Push Button 1
+                    return self.paddle1.getButton()
+                elif address == 0xC064 :                                        # Paddle 0
+                    return self.paddle0.read()
+                elif address == 0xC065 :                                        # Paddle 1
+                    return self.paddle1.read()
+                elif address == 0xC070 :                                        # paddle timer RST
+                    self.paddle0.reset()
+                    self.paddle1.reset()
 
-        if address == 0xC000 :                                                  # KEYBOARD
-            return self.keyctrl.getKey()
-        elif address == 0xC010 :                                                # KBDSTROBE
-            self.keyctrl.strobe()
-            return self.keyctrl.getKey()
-        elif (address == 0xC020) or (address == 0xC030) :                       # SPEAKER, TAPEOUT
-            self.speaker.playSound()
-        elif address == 0xC050 :                                                # Graphics
-            self.screen.setTEXT(False)
-        elif address == 0xC051 :                                                # Text
-            self.screen.setTEXT(True)
-        elif address == 0xC052 :                                                # Mixed off
-            self.screen.setMIXED(False)
-        elif address == 0xC053 :                                                # Mixed on
-            self.screen.setMIXED(True)
-        elif address == 0xC054 :                                                # PAGE2 off
-            self.screen.setPAGE2(False)
-        elif address == 0xC055 :                                                # PAGE2 on
-            self.screen.setPAGE2(True)
-        elif address == 0xC056 :                                                # HiRes off
-            self.screen.setHIRES(False)
-        elif address == 0xC057 :                                                # HiRes on
-            self.screen.setHIRES(True)
-        elif address == 0xC061 :                                                # Push Button 0
-            return self.paddle0.getButton()
-        elif address == 0xC062 :                                                # Push Button 1
-            return self.paddle1.getButton()
-        elif address == 0xC064 :                                                # Paddle 0
-            return self.paddle0.read()
-        elif address == 0xC065 :                                                # Paddle 1
-            return self.paddle1.read()
-        elif address == 0xC070 :                                                # paddle timer RST
-            self.paddle0.reset()
-            self.paddle1.reset()
-        elif address == 0xC080 | 0xC084 :                                       # LC2RD
-            self.LCBK2 = True
-            self.LCRD = True
-            self.LCWR = False
-            self.LCWFF = False
-        elif address == 0xC081 | 0xC085 :                                       # LC2WR
-            self.LCBK2 = True
-            self.LCRD = False
-            self.LCWR |= self.LCWFF
-            self.LCWFF = value is None
-        elif address == 0xC082 | 0xC086 :                                       # ROMONLY2
-            self.LCBK2 = True
-            self.LCRD = False
-            self.LCWR = False
-            self.LCWFF = False
-        elif address == 0xC083 | 0xC087 :                                       # LC2RW
-            self.LCBK2 = True
-            self.LCRD = True
-            self.LCWR |= self.LCWFF
-            self.LCWFF = value is None
-        elif address == 0xC088 | 0xC08C :                                       # LC1RD
-            self.LCBK2 = False
-            self.LCRD = True
-            self.LCWR = False
-            self.LCWFF = False
-        elif address == 0xC089 | 0xC08D :                                       # LC1WR
-            self.LCBK2 = False
-            self.LCRD = False
-            self.LCWR |= self.LCWFF
-            self.LCWFF = value is None
-        elif address == 0xC08A | 0xC08E :                                       # ROMONLY1
-            self.LCBK2 = False
-            self.LCRD = False
-            self.LCWR = False
-            self.LCWFF = False
-        elif address == 0xC08B | 0xC08F :                                       # LC1RW
-            self.LCBK2 = False
-            self.LCRD = True
-            self.LCWR |= self.LCWFF
-            self.LCWFF = value is None
-        elif (address >= 0xC0E0) and (address <= 0xC0E7) :                      # MOVE DRIVE HEAD
-            self.disk.stepMotor(address)
-        elif address == 0xCFFF | 0xC0E8 :                                       # MOTOROFF
-            self.disk.setMotorOn(False)
-        elif address == 0xC0E9 :                                                # MOTORON
-            self.disk.setMotorOn(True)
-        elif address == 0xC0EA :                                                # DRIVE0EN (not implemented)
-            pass
-        elif address == 0xC0EB :                                                # DRIVE1EN (not implemented)
-            pass
-        elif address == 0xC0EC :
-            if self.disk.getWriteMode() :                                       # writting dLatch
-                self.disk.write(self.DLATCH)
-                self.screen.setWindowTitle("r/w",
-                    f"WRITE[0x{self.disk.track:02X}, 0x{self.disk.nibble:04X}]")
-            else :                                                              # reading dLatch
-                self.DLATCH = self.disk.read()
-                self.screen.setWindowTitle("r/w",
-                    f"READ[0x{self.disk.track:02X}, 0x{self.disk.nibble:04X}]")
-            return self.DLATCH
-        elif address == 0xC0ED :                                                # Load Data Latch
-            if value :
-                self.DLATCH = value
-        elif address == 0xC0EE :                                                # latch for READ
-            self.disk.setWriteMode(False)
-            return 0x80 if self.disk.getReadOnly() else 0x00                    # check protection
-        elif address == 0xC0EF :                                                # latch for WRITE
-            self.disk.setWriteMode(True)
+        else :
+            if address < 0xC0E0 :
+                if address == 0xC080 or address == 0xC084 :                     # LC2RD
+                    self.LCBK2 = True
+                    self.LCRD = True
+                    self.LCWR = False
+                    self.LCWFF = False
+                elif address == 0xC081 or address == 0xC085 :                   # LC2WR
+                    self.LCBK2 = True
+                    self.LCRD = False
+                    self.LCWR |= self.LCWFF
+                    self.LCWFF = value is None
+                elif address == 0xC082 or address == 0xC086 :                   # ROMONLY2
+                    self.LCBK2 = True
+                    self.LCRD = False
+                    self.LCWR = False
+                    self.LCWFF = False
+                elif address == 0xC083 or address == 0xC087 :                   # LC2RW
+                    self.LCBK2 = True
+                    self.LCRD = True
+                    self.LCWR |= self.LCWFF
+                    self.LCWFF = value is None
+                elif address == 0xC088 or address == 0xC08C :                   # LC1RD
+                    self.LCBK2 = False
+                    self.LCRD = True
+                    self.LCWR = False
+                    self.LCWFF = False
+                elif address == 0xC089 or address == 0xC08D :                   # LC1WR
+                    self.LCBK2 = False
+                    self.LCRD = False
+                    self.LCWR |= self.LCWFF
+                    self.LCWFF = value is None
+                elif address == 0xC08A or address == 0xC08E :                   # ROMONLY1
+                    self.LCBK2 = False
+                    self.LCRD = False
+                    self.LCWR = False
+                    self.LCWFF = False
+                elif address == 0xC08B or address == 0xC08F :                   # LC1RW
+                    self.LCBK2 = False
+                    self.LCRD = True
+                    self.LCWR |= self.LCWFF
+                    self.LCWFF = value is None
+            else :
+                if address == 0xC0EC :
+                    if self.disk.getWriteMode() :                               # writting dLatch
+                        self.disk.write(self.DLATCH)
+                        self.screen.setWindowTitle("r/w",
+                            f"WRITE[0x{self.disk.track:02X}, 0x{self.disk.nibble:04X}]")
+                    else :                                                      # reading dLatch
+                        self.DLATCH = self.disk.read()
+                        self.screen.setWindowTitle("r/w",
+                            f"READ[0x{self.disk.track:02X}, 0x{self.disk.nibble:04X}]")
+                    return self.DLATCH
+                elif address >= 0xC0E0 and address <= 0xC0E7 :                  # MOVE DRIVE HEAD
+                    self.disk.stepMotor(address)
+                elif address == 0xC0ED :                                        # Load Data Latch
+                    if value :
+                        self.DLATCH = value
+                elif address == 0xC0EE :                                        # latch for READ
+                    self.disk.setWriteMode(False)
+                    return 0x80 if self.disk.getReadOnly() else 0x00            # check protection
+                elif address == 0xC0EF :                                        # latch for WRITE
+                    self.disk.setWriteMode(True)
+                elif address == 0xCFFF or address == 0xC0E8 :                   # MOTOROFF
+                    self.disk.setMotorOn(False)
+                elif address == 0xC0E9 :                                        # MOTORON
+                    self.disk.setMotorOn(True)
+                elif address == 0xC0EA :                                        # DRIVE0EN (not implemented)
+                    pass
+                elif address == 0xC0EB :                                        # DRIVE1EN (not implemented)
+                    pass
 
         return 0                                                                # catch all
 
