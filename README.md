@@ -11,26 +11,26 @@ J - Well, python is sooo slooooow
 A - It is not that slow - and here is one evidence : a playable Apple 2 emulator  
 
 J - You had to remove a lot of features achieve it ?  
-A - Nope, it has the language card, supports all video modes, speaker, joystick and emulates the disk II drive  
+A - Nope, it has the **language card**, supports **all video modes**, **speaker**, **joystick** and emulates the **disk II drive**    
  
 J - I can't believe - does it support games ?  
-A - Yes, it uses the SDL2 library for video and sound  
+A - Yes, it uses the **SDL**2 library for video and sound  
 
 J - How can I test it ?  
-A - Well, you just need python 3 and run **pip install pySDL2 pysdl2-dll** to install the graphics library  
-    Then, open a terminal and type : **python reinetteII+.py**  
+A - Well, you just need python 3 and run ```pip install pySDL2 pysdl2-dll``` to install the graphics library  
+    Then, open a terminal and type : ```python reinetteII+.py```    
     On windows, you can rename 'reinetteII+.py' to 'reinetteII+.pyw' and double click on it to launch it from explorer  
 
 J - Well, I have a dark screen with Apple II printed on top, what's next ?  
-A - This is how the apple II plus starts - you can press reset (F11) to get to the APPLESOFT prompt or drag and drop a floppy image (.nib only) and wait it loads the programm from floppy.  
+A - This is how the apple II plus starts - you can press **reset (F11)** to get to the **APPLESOFT** prompt or drag and drop a floppy image (.nib only) and wait it loads the programm from floppy.  
 
 J - Jeez, that's pretty neat !  
 A - I Hope you won't spend all your time playing ... I wrote it for you to read it - I spent a lot commenting the code.  
 
 J - Yeah, yeah, one more play please - how do I use the stick ?  
-A - Press F1 to get help  
+A - **Press F1 to get help**  
 
-J - Screenshots ? it can take screenshots ?  
+J - **Screenshots** ? it can take screenshots ?  
 A - Yes, look :   
 
 ![screenshots](assets/screenshots.png)
