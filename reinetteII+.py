@@ -51,7 +51,7 @@ cpu = puce6502.Puce6502(mem.readMem, mem.writeMem)                              
 running = True
 paused  = False
 event = SDL_Event()
-ExecRate = 1023000 / screen.FPS                                         # the apple II is clocked at 1023000.0 Hz
+ExecRate = 1023000 / screen.FPS                                                 # the apple II is clocked at 1023000.0 Hz
 
 
 while running :
@@ -60,6 +60,11 @@ while running :
 
     if not paused :
         cpu.run(ExecRate)                                                       # execute ExecRate instructions for 1/FPS of a second
+
+    limit = 100                                                                 # OVERCLOCKING CPU to speed-up disk access
+    while disk.getMotorOn() and limit :
+        cpu.run(10000)
+        limit-=1
 
     #============================================================== UPDATE VIDEO
 
@@ -81,7 +86,7 @@ while running :
         if event.type == SDL_QUIT :                                             # Window Manager sent TERM signal
             running = False
 
-        #================================== LOAD A FLOPPY IMAGE ON DRAG AND DROP
+        #==================================== LOAD A FLOPPY IMAGE ON DRAG'N DROP
 
         elif event.type == SDL_DROPFILE :                                       # user dropped a file
             filename = event.drop.file                                          # get its full pathname

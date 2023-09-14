@@ -84,9 +84,9 @@ class Screen() :
         self.zoom = 2
         self.monochrome = False
 
-        self.FPS = 30.0
+        self.FPS = 30.0                                                         # NTSC Frame Rate
         self.frameStart = 0
-        self.frameNumber = 0                                                     # TEXT cursor flashes at 2Hz
+        self.frameNumber = 0                                                    # TEXT cursor flashes at 2Hz
 
         self.title = {"paused" : False,                                         # update the window title with dynamic data
                       "fps"    : self.FPS,
@@ -107,12 +107,11 @@ class Screen() :
         SDL_SetWindowIcon(self.wdo, self.ico)
 
         self.rdr = SDL_CreateRenderer(self.wdo, -1,
-                                     SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC)
+                                     SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC)  # yes, software : not using double buffering
 
         SDL_SetRenderDrawBlendMode(self.rdr, SDL_BLENDMODE_NONE)
         SDL_RenderSetScale(self.rdr, self.zoom, self.zoom)
-        SDL_EventState(SDL_DROPFILE, SDL_ENABLE)
-        SDL_RenderSetScale(self.rdr, self.zoom, self.zoom)
+        SDL_EventState(SDL_DROPFILE, SDL_ENABLE)                                # to allow drag'n drop of .nib files
 
         #============================ LOAD NORMAL AND REVERSE CHARACTERS BITMAPS
 

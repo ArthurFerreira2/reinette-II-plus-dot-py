@@ -220,5 +220,11 @@ cpu.run(96240573)
     user    0m0.000s
     sys     0m0.015s
 
+
+    if elif with binary search tree deep 5 :
+    real    0m22.976s
+    user    0m0.015s
+    sys     0m0.000s
+
     kudos to 'phire' : https://www.reddit.com/r/EmuDev/comments/16f021n/comment/k02qnl8/?utm_source=share&utm_medium=web2x&context=3
 """

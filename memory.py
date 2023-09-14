@@ -51,7 +51,7 @@ class Memory() :
         """
         if address < 0xC080 :
             if address < 0xC050 :
-                if (address == 0xC020) or (address == 0xC030) :                 # SPEAKER, TAPEOUT
+                if address == 0xC020 or address == 0xC030 :                     # SPEAKER, TAPEOUT
                     self.speaker.playSound()
                 elif address == 0xC000 :                                        # KEYBOARD
                     return self.keyctrl.getKey()
