@@ -14,7 +14,7 @@ J - You had to remove a lot of features achieve it ?
 A - Nope, it has the **language card**, supports **all video modes**, **speaker**, **joystick** and emulates the **disk II drive**    
  
 J - I can't believe - does it support games ?  
-A - Yes, it uses the **SDL**2 library for video and sound  
+A - Yes, it uses the **SDL2** library for video and sound  
 
 J - How can I test it ?  
 A - Well, you just need python 3 and run ```pip install pySDL2 pysdl2-dll``` to install the graphics library  
