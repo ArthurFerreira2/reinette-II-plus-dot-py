@@ -325,21 +325,6 @@ class Puce6502() :
                                     clock.ticks += 2
                                     continue
 
-                                elif inst ==  0x19 :                            # ABY ORA
-                                    address = self.readMem(self.PC)
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    if (address + self.Y) & 0xFF00 :
-                                        clock.ticks += 5
-                                    else:
-                                        clock.ticks += 4
-                                    address |= self.readMem(self.PC) << 8
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    address = (address + self.Y) & 0xFFFF
-                                    self.A |= self.readMem(address)
-                                    self.Z = self.A == 0
-                                    self.S = self.A > 0x7F
-                                    continue
-
                                 elif inst ==  0x1D :                            # ABX ORA
                                     address = self.readMem(self.PC)
                                     self.PC = (self.PC + 1) & 0xFFFF
@@ -350,6 +335,21 @@ class Puce6502() :
                                     address |= self.readMem(self.PC) << 8
                                     self.PC = (self.PC + 1) & 0xFFFF
                                     address = (address + self.X) & 0xFFFF
+                                    self.A |= self.readMem(address)
+                                    self.Z = self.A == 0
+                                    self.S = self.A > 0x7F
+                                    continue
+
+                                elif inst ==  0x19 :                            # ABY ORA
+                                    address = self.readMem(self.PC)
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    if (address + self.Y) & 0xFF00 :
+                                        clock.ticks += 5
+                                    else:
+                                        clock.ticks += 4
+                                    address |= self.readMem(self.PC) << 8
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    address = (address + self.Y) & 0xFFFF
                                     self.A |= self.readMem(address)
                                     self.Z = self.A == 0
                                     self.S = self.A > 0x7F
@@ -375,7 +375,16 @@ class Puce6502() :
                             if inst < 0x28 :
                             # 0x20 to 0x27
 
-                                if inst ==  0x20 :                              # ABS JSR
+                                if inst ==  0x24 :                              # ZPG BIT
+                                    address = self.readMem(self.PC)
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    value8 = self.readMem(address)
+                                    self.Z = (self.A & value8) == 0
+                                    self.setP((self.getP() & 0x3F) | (value8 & 0xC0))
+                                    clock.ticks += 3
+                                    continue
+
+                                elif inst ==  0x20 :                            # ABS JSR
                                     address = self.readMem(self.PC)
                                     self.PC = (self.PC + 1) & 0xFFFF
                                     address |= self.readMem(self.PC) << 8
@@ -399,14 +408,6 @@ class Puce6502() :
                                     clock.ticks += 6
                                     continue
 
-                                elif inst ==  0x24 :                            # ZPG BIT
-                                    address = self.readMem(self.PC)
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    value8 = self.readMem(address)
-                                    self.Z = (self.A & value8) == 0
-                                    self.setP((self.getP() & 0x3F) | (value8 & 0xC0))
-                                    clock.ticks += 3
-                                    continue
 
                                 elif inst ==  0x25 :                            # ZPG AND
                                     self.A &= self.readMem(self.readMem(self.PC))
@@ -1075,7 +1076,13 @@ class Puce6502() :
                             if inst < 0x88 :
                             # 0x80 to 0x87
 
-                                if inst ==  0x81 :                              # IZX STA
+                                if inst ==  0x85 :                              # ZPG STA
+                                    self.writeMem(self.readMem(self.PC), self.A)
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    clock.ticks += 3
+                                    continue
+
+                                elif inst ==  0x81 :                            # IZX STA
                                     value8 = (self.readMem(self.PC) + self.X) & 0xFF
                                     self.PC = (self.PC + 1) & 0xFFFF
                                     address = self.readMem(value8)
@@ -1091,11 +1098,6 @@ class Puce6502() :
                                     clock.ticks += 3
                                     continue
 
-                                elif inst ==  0x85 :                            # ZPG STA
-                                    self.writeMem(self.readMem(self.PC), self.A)
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    clock.ticks += 3
-                                    continue
 
                                 elif inst ==  0x86 :                            # ZPG STX
                                     self.writeMem(self.readMem(self.PC), self.X)
@@ -1111,6 +1113,15 @@ class Puce6502() :
                                     self.Z = (self.Y & 0xFF) == 0
                                     self.S = (self.Y & self.SIGN) != 0
                                     clock.ticks += 2
+                                    continue
+
+                                elif inst ==  0x8D :                            # ABS STA
+                                    address = self.readMem(self.PC)
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    address |= self.readMem(self.PC) << 8
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    self.writeMem(address, self.A)
+                                    clock.ticks += 4
                                     continue
 
                                 elif inst ==  0x8A :                            # IMP TXA
@@ -1129,15 +1140,6 @@ class Puce6502() :
                                     clock.ticks += 4
                                     continue
 
-                                elif inst ==  0x8D :                            # ABS STA
-                                    address = self.readMem(self.PC)
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    address |= self.readMem(self.PC) << 8
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    self.writeMem(address, self.A)
-                                    clock.ticks += 4
-                                    continue
-
                                 elif inst ==  0x8E :                            # ABS STX
                                     address = self.readMem(self.PC)
                                     self.PC = (self.PC + 1) & 0xFFFF
@@ -1151,7 +1153,18 @@ class Puce6502() :
                             if inst < 0x98 :
                             # 0x90 to 0x97
 
-                                if inst ==  0x90 :                              # REL BCC
+                                if inst ==  0x91 :                              # IZY STA
+                                    value8 = self.readMem(self.PC)
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    address = self.readMem(value8)
+                                    value8 = (value8 + 1) & 0xFF
+                                    address |= self.readMem(value8) << 8
+                                    address = (address + self.Y) & 0xFFFF
+                                    self.writeMem(address, self.A)
+                                    clock.ticks += 6
+                                    continue
+
+                                elif inst ==  0x90 :                            # REL BCC
                                     address = self.readMem(self.PC)
                                     self.PC = (self.PC + 1) & 0xFFFF
                                     if not self.C  :
@@ -1164,16 +1177,6 @@ class Puce6502() :
                                     clock.ticks += 2
                                     continue
 
-                                elif inst ==  0x91 :                            # IZY STA
-                                    value8 = self.readMem(self.PC)
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    address = self.readMem(value8)
-                                    value8 = (value8 + 1) & 0xFF
-                                    address |= self.readMem(value8) << 8
-                                    address = (address + self.Y) & 0xFFFF
-                                    self.writeMem(address, self.A)
-                                    clock.ticks += 6
-                                    continue
 
                                 elif inst ==  0x94 :                            # ZPX STY
                                     address = (self.readMem(self.PC) + self.X) & 0xFF
@@ -1234,7 +1237,23 @@ class Puce6502() :
                             if inst < 0xA8 :
                             # 0xA0 to 0xA7
 
-                                if inst ==  0xA0 :                              # IMM LDY
+                                if inst ==  0xA4 :                              # ZPG LDY
+                                    self.Y = self.readMem(self.readMem(self.PC))
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    self.Z = self.Y == 0
+                                    self.S = self.Y > 0x7F
+                                    clock.ticks += 3
+                                    continue
+
+                                elif inst ==  0xA5 :                            # ZPG LDA
+                                    self.A = self.readMem(self.readMem(self.PC))
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    self.Z = self.A == 0
+                                    self.S = self.A > 0x7F
+                                    clock.ticks += 3
+                                    continue
+
+                                elif inst ==  0xA0 :                            # IMM LDY
                                     self.Y = self.readMem(self.PC)
                                     self.PC = (self.PC + 1) & 0xFFFF
                                     self.Z = self.Y == 0
@@ -1263,22 +1282,6 @@ class Puce6502() :
                                     clock.ticks += 2
                                     continue
 
-                                elif inst ==  0xA4 :                            # ZPG LDY
-                                    self.Y = self.readMem(self.readMem(self.PC))
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    self.Z = self.Y == 0
-                                    self.S = self.Y > 0x7F
-                                    clock.ticks += 3
-                                    continue
-
-                                elif inst ==  0xA5 :                            # ZPG LDA
-                                    self.A = self.readMem(self.readMem(self.PC))
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    self.Z = self.A == 0
-                                    self.S = self.A > 0x7F
-                                    clock.ticks += 3
-                                    continue
-
                                 elif inst ==  0xA6 :                            # ZPG LDX
                                     self.X = self.readMem(self.readMem(self.PC))
                                     self.PC = (self.PC + 1) & 0xFFFF
@@ -1290,7 +1293,18 @@ class Puce6502() :
                             else :
                                 # 0xA8 to 0xAF
 
-                                if inst ==  0xA8 :                              # IMP TAY
+                                if inst ==  0xAD :                              # ABS LDA
+                                    address = self.readMem(self.PC)
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    address |= self.readMem(self.PC) << 8
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    self.A = self.readMem(address)
+                                    self.Z = self.A == 0
+                                    self.S = self.A > 0x7F
+                                    clock.ticks += 4
+                                    continue
+
+                                elif inst ==  0xA8 :                            # IMP TAY
                                     self.Y = self.A
                                     self.Z = self.Y == 0
                                     self.S = self.Y > 0x7F
@@ -1323,17 +1337,6 @@ class Puce6502() :
                                     clock.ticks += 4
                                     continue
 
-                                elif inst ==  0xAD :                            # ABS LDA
-                                    address = self.readMem(self.PC)
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    address |= self.readMem(self.PC) << 8
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    self.A = self.readMem(address)
-                                    self.Z = self.A == 0
-                                    self.S = self.A > 0x7F
-                                    clock.ticks += 4
-                                    continue
-
                                 elif inst ==  0xAE :                            # ABS LDX
                                     address = self.readMem(self.PC)
                                     self.PC = (self.PC + 1) & 0xFFFF
@@ -1349,20 +1352,7 @@ class Puce6502() :
                             if inst < 0xB8 :
                             # 0xB0 to 0xB7
 
-                                if inst ==  0xB0 :                              # REL BCS
-                                    address = self.readMem(self.PC)
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    if self.C :
-                                        clock.ticks += 1
-                                        if address & self.SIGN :
-                                            address |= 0xFF00
-                                        if ((self.PC & 0xFF) + address) & 0xFF00 :
-                                            clock.ticks += 1
-                                        self.PC = (self.PC + address) & 0xFFFF
-                                    clock.ticks += 2
-                                    continue
-
-                                elif inst ==  0xB1 :                            # IZY LDA
+                                if inst ==  0xB1 :                              # IZY LDA
                                     value8 = self.readMem(self.PC)
                                     self.PC = (self.PC + 1) & 0xFFFF
                                     address = self.readMem(value8)
@@ -1376,6 +1366,20 @@ class Puce6502() :
                                     self.Z = self.A == 0
                                     self.S = self.A > 0x7F
                                     continue
+
+                                elif inst ==  0xB0 :                            # REL BCS
+                                    address = self.readMem(self.PC)
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    if self.C :
+                                        clock.ticks += 1
+                                        if address & self.SIGN :
+                                            address |= 0xFF00
+                                        if ((self.PC & 0xFF) + address) & 0xFF00 :
+                                            clock.ticks += 1
+                                        self.PC = (self.PC + address) & 0xFFFF
+                                    clock.ticks += 2
+                                    continue
+
 
                                 elif inst ==  0xB4 :                            # ZPX LDY
                                     address = (self.readMem(self.PC) + self.X) & 0xFF
@@ -1407,7 +1411,22 @@ class Puce6502() :
                             else :
                                 # 0xB8 to 0xBF
 
-                                if inst ==  0xB8 :                              # IMP CLV
+                                if inst ==  0xBD :                              # ABX LDA
+                                    address = self.readMem(self.PC)
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    if (address + self.X) & 0xFF00 :
+                                        clock.ticks += 5
+                                    else :
+                                        clock.ticks += 4
+                                    address |= self.readMem(self.PC) << 8
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    address = (address + self.X) & 0xFFFF
+                                    self.A = self.readMem(address)
+                                    self.Z = self.A == 0
+                                    self.S = self.A > 0x7F
+                                    continue
+
+                                elif inst ==  0xB8 :                            # IMP CLV
                                     self.V = 0
                                     clock.ticks += 2
                                     continue
@@ -1449,20 +1468,6 @@ class Puce6502() :
                                     self.S = self.Y > 0x7F
                                     continue
 
-                                elif inst ==  0xBD :                            # ABX LDA
-                                    address = self.readMem(self.PC)
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    if (address + self.X) & 0xFF00 :
-                                        clock.ticks += 5
-                                    else :
-                                        clock.ticks += 4
-                                    address |= self.readMem(self.PC) << 8
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    address = (address + self.X) & 0xFFFF
-                                    self.A = self.readMem(address)
-                                    self.Z = self.A == 0
-                                    self.S = self.A > 0x7F
-                                    continue
 
                                 elif inst ==  0xBE :                            # ABY LDX
                                     address = self.readMem(self.PC)
@@ -1485,7 +1490,18 @@ class Puce6502() :
                             if inst < 0xC8 :
                             # 0xC0 to  0xC7
 
-                                if inst ==  0xC0 :                              # IMM CPY
+                                if inst ==  0xC6 :                              # ZPG DEC
+                                    address = self.readMem(self.PC)
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    value8 = self.readMem(address)
+                                    value8 = (value8 - 1) & 0xFF
+                                    self.writeMem(address, value8)
+                                    self.Z = value8 == 0
+                                    self.S = value8 > 0x7F
+                                    clock.ticks += 5
+                                    continue
+
+                                elif inst ==  0xC0 :                            # IMM CPY
                                     value8 = self.readMem(self.PC)
                                     self.PC = (self.PC + 1) & 0xFFFF
                                     self.Z = ((self.Y - value8) & 0xFF) == 0
@@ -1525,17 +1541,6 @@ class Puce6502() :
                                     clock.ticks += 3
                                     continue
 
-                                elif inst ==  0xC6 :                            # ZPG DEC
-                                    address = self.readMem(self.PC)
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    value8 = self.readMem(address)
-                                    value8 = (value8 - 1) & 0xFF
-                                    self.writeMem(address, value8)
-                                    self.Z = value8 == 0
-                                    self.S = value8 > 0x7F
-                                    clock.ticks += 5
-                                    continue
-
                             else :
                                 # 0xC8 to 0xCF
 
@@ -1555,7 +1560,7 @@ class Puce6502() :
                                     clock.ticks += 2
                                     continue
 
-                                elif inst ==  0xCA :                            # IMP DEX
+                                elif inst ==  0xCA :                              # IMP DEX
                                     self.X = (self.X - 1) & 0xFF
                                     self.Z = (self.X & 0xFF) == 0
                                     self.S = self.X > 0x7F
@@ -1713,7 +1718,17 @@ class Puce6502() :
                             if inst < 0xE8 :
                             # 0xE0 to 0xE7
 
-                                if inst ==  0xE0 :                              # IMM CPX
+                                if inst ==  0xE6 :                              # ZPG INC
+                                    address = self.readMem(self.PC)
+                                    self.PC = (self.PC + 1) & 0xFFFF
+                                    value8 = (self.readMem(address) + 1) & 0xFF
+                                    self.writeMem(address, value8)
+                                    self.Z = value8 == 0
+                                    self.S = value8 > 0x7F
+                                    clock.ticks += 5
+                                    continue
+
+                                elif inst ==  0xE0 :                            # IMM CPX
                                     value8 = self.readMem(self.PC)
                                     self.PC = (self.PC + 1) & 0xFFFF
                                     self.Z = ((self.X - value8) & 0xFF) == 0
@@ -1769,19 +1784,13 @@ class Puce6502() :
                                     clock.ticks += 3
                                     continue
 
-                                elif inst ==  0xE6 :                            # ZPG INC
-                                    address = self.readMem(self.PC)
-                                    self.PC = (self.PC + 1) & 0xFFFF
-                                    value8 = (self.readMem(address) + 1) & 0xFF
-                                    self.writeMem(address, value8)
-                                    self.Z = value8 == 0
-                                    self.S = value8 > 0x7F
-                                    clock.ticks += 5
-                                    continue
-
                             else :
 
-                                if inst ==  0xE8 :                              # IMP INX
+                                if inst ==  0xEA :                              # IMP NOP
+                                    clock.ticks += 2
+                                    continue
+
+                                elif inst ==  0xE8 :                            # IMP INX
                                     self.X = (self.X + 1) & 0xFF
                                     self.Z = self.X == 0
                                     self.S = self.X > 0x7F
@@ -1802,10 +1811,6 @@ class Puce6502() :
                                     self.A = value16 & 0xFF
                                     self.Z = self.A == 0
                                     self.S = self.A > 0x7F
-                                    clock.ticks += 2
-                                    continue
-
-                                elif inst ==  0xEA :                            # IMP NOP
                                     clock.ticks += 2
                                     continue
 

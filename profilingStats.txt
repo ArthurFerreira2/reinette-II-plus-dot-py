@@ -1,0 +1,60 @@
+         31304505 function calls in 39.935 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     1942   22.613    0.012   31.286    0.016 puce6502.py:156(run)
+      877    8.357    0.010    8.442    0.010 screen.py:241(update)
+ 28621189    7.514    0.000    8.142    0.000 memory.py:167(readMem)
+  1732334    0.454    0.000    0.459    0.000 memory.py:183(writeMem)
+   225364    0.398    0.000    0.633    0.000 memory.py:47(softSwitches)
+        1    0.189    0.189    0.191    0.191 screen.py:61(__init__)
+   208533    0.095    0.000    0.095    0.000 disk.py:51(read)
+      877    0.078    0.000    0.078    0.000 screen.py:204(updateWindowTitle)
+   209410    0.076    0.000    0.076    0.000 screen.py:198(setWindowTitle)
+    34971    0.037    0.000    0.037    0.000 puce6502.py:74(setP)
+    34971    0.034    0.000    0.034    0.000 puce6502.py:70(getP)
+   208533    0.033    0.000    0.033    0.000 disk.py:29(getWriteMode)
+     9192    0.030    0.000    0.030    0.000 speaker.py:57(playSound)
+        1    0.015    0.015    0.015    0.015 speaker.py:19(__init__)
+     6634    0.001    0.000    0.001    0.000 keyctrl.py:68(getKey)
+      958    0.001    0.000    0.001    0.000 {built-in method _ctypes.byref}
+      768    0.001    0.000    0.001    0.000 screen.py:249(<listcomp>)
+      768    0.001    0.000    0.001    0.000 screen.py:248(<listcomp>)
+     3296    0.001    0.000    0.001    0.000 keyctrl.py:71(strobe)
+      462    0.001    0.000    0.001    0.000 disk.py:61(stepMotor)
+        3    0.001    0.000    0.001    0.000 surface.py:180(<lambda>)
+     1942    0.001    0.000    0.001    0.000 disk.py:35(getMotorOn)
+      192    0.000    0.000    0.000    0.000 screen.py:78(<listcomp>)
+      192    0.000    0.000    0.000    0.000 screen.py:77(<listcomp>)
+        4    0.000    0.000    0.000    0.000 {built-in method io.open}
+        4    0.000    0.000    0.000    0.000 {method 'readinto' of '_io.BufferedReader' objects}
+       96    0.000    0.000    0.000    0.000 screen.py:246(<listcomp>)
+       96    0.000    0.000    0.000    0.000 screen.py:247(<listcomp>)
+      162    0.000    0.000    0.000    0.000 paddle.py:16(setButton)
+      167    0.000    0.000    0.000    0.000 screen.py:173(setPAGE2)
+        1    0.000    0.000    0.000    0.000 memory.py:20(__init__)
+        1    0.000    0.000    0.000    0.000 disk.py:7(__init__)
+      130    0.000    0.000    0.000    0.000 rect.py:81(__init__)
+        2    0.000    0.000    0.000    0.000 disk.py:46(insertFloppy)
+        1    0.000    0.000    0.000    0.000 screen.py:82(<listcomp>)
+       24    0.000    0.000    0.000    0.000 screen.py:75(<listcomp>)
+      176    0.000    0.000    0.000    0.000 disk.py:32(setMotorOn)
+       24    0.000    0.000    0.000    0.000 screen.py:76(<listcomp>)
+        1    0.000    0.000    0.000    0.000 screen.py:65(<listcomp>)
+       88    0.000    0.000    0.000    0.000 disk.py:26(setWriteMode)
+       88    0.000    0.000    0.000    0.000 disk.py:41(getReadOnly)
+        1    0.000    0.000    0.000    0.000 audio.py:142(__init__)
+        2    0.000    0.000    0.000    0.000 puce6502.py:85(rst)
+        1    0.000    0.000    0.000    0.000 puce6502.py:29(__init__)
+        2    0.000    0.000    0.000    0.000 keyctrl.py:74(setKeyFromKeySym)
+        7    0.000    0.000    0.000    0.000 screen.py:162(setHIRES)
+        6    0.000    0.000    0.000    0.000 screen.py:140(setTEXT)
+        2    0.000    0.000    0.000    0.000 paddle.py:5(__init__)
+        3    0.000    0.000    0.000    0.000 screen.py:151(setMIXED)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 keyctrl.py:62(__init__)
+        3    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+
+

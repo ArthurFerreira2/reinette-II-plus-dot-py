@@ -167,16 +167,16 @@ class Memory() :
     def readMem(self, address) :                                                # read
         if address < Memory.RAMSIZE :
             return self.ram[address]                                            # RAM
+        if address & 0xFF00 == 0xC000 :
+            return self.softSwitches(address)                                   # Soft Switches
+        if address & 0xFF00 == Memory.SL6START :
+            return self.sl6[address - Memory.SL6START]                          # disk][
         if address >= Memory.ROMSTART :
             if not self.LCRD :
                 return self.rom[address - Memory.ROMSTART]                      # ROM
             if self.LCBK2 and (address < 0xE000) :
                 return self.bk2[address - Memory.BK2START]                      # BK2
             return self.lgc[address - Memory.LGCSTART]                          # LC
-        if (address & 0xFF00) == Memory.SL6START :
-            return self.sl6[address - Memory.SL6START]                          # disk][
-        if (address & 0xF000) == 0xC000 :
-            return self.softSwitches(address)                                   # Soft Switches
         return 0                                                                # catch all
 
 
@@ -184,11 +184,12 @@ class Memory() :
         if address < Memory.RAMSIZE :
             self.ram[address] = value                                           # RAM
             return
+        if address & 0xFF00 == 0xC000 :
+            self.softSwitches(address, value)                                   # Soft Switches
+            return
         if self.LCWR and (address >= Memory.ROMSTART) :
             if self.LCBK2 and (address < 0xE000) :
                 self.bk2[address - Memory.BK2START] = value                     # BK2
                 return
             self.lgc[address - Memory.LGCSTART] = value                         # LC
             return
-        if (address & 0xF000) == 0xC000 :
-            self.softSwitches(address, value)                                   # Soft Switches

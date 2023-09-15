@@ -1,7 +1,13 @@
 import sys
 import ctypes
 from sdl2 import *                                                              # pip install pysdl2 pysdl2-dll
-import puce6502, memory, keyctrl, screen, speaker, paddle, disk
+import puce6502, memory, keyctrl, screen, speaker, paddle, disk, clock
+
+# import cProfile
+# from pstats import Stats, SortKey
+# profiler = cProfile.Profile()
+# profiler.enable()
+
 
 
 helpMsg = b"""
@@ -51,7 +57,7 @@ cpu = puce6502.Puce6502(mem.readMem, mem.writeMem)                              
 running = True
 paused  = False
 event = SDL_Event()
-ExecRate = 1023000 / screen.FPS                                                 # the apple II is clocked at 1023000.0 Hz
+ExecRate = clock.CPU_FREQUENCY / screen.FPS                                           # the apple II is clocked at 1023000.0 Hz
 
 
 while running :
@@ -60,6 +66,7 @@ while running :
 
     if not paused :
         cpu.run(ExecRate)                                                       # execute ExecRate instructions for 1/FPS of a second
+        # cProfile.run('cpu.run(ExecRate)')
 
     limit = 100                                                                 # OVERCLOCKING CPU to speed-up disk access
     while disk.getMotorOn() and limit :
@@ -69,6 +76,7 @@ while running :
     #============================================================== UPDATE VIDEO
 
     screen.update(mem.ram)                                                      # refresh screen
+    # cProfile.run('screen.update(mem.ram)')
 
     #==================================================== CATCH USER INTERACTION
 
@@ -172,3 +180,16 @@ while running :
                 paddle1.update(127)
             elif event.key.keysym.sym == SDLK_KP_2 :                            # release pdl1 <-
                 paddle1.update(127)
+
+
+# profiler.disable()
+
+# stream = open('profilingStats.txt', 'w')
+# stats = Stats(profiler, stream = stream)
+
+# stats.strip_dirs()
+# stats.sort_stats('time')
+# stats.dump_stats('prof_stats.dump')
+# stats.print_stats()
+
+# stream.close()

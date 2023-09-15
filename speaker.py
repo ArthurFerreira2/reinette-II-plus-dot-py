@@ -12,8 +12,7 @@ class Speaker() :
 
     BUFFER_LENGHT = 8192                                                        # found to be large enought
     FREQUENCY = 88000                                                           # sample frequency of the audio device
-    CPU_CLOCK = 1023000
-    RATE = CPU_CLOCK / FREQUENCY
+    RATE = clock.CPU_FREQUENCY / FREQUENCY
 
 
     def __init__(self) :
