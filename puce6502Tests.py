@@ -103,67 +103,67 @@ newPC = cpu.PC                                                                  
 
 # if you want to check the accuracy of the emulation, uncomment the while loop :
 
-# while(True) :
+while(True) :
 
-#     b1 = ram[(newPC + 1) & 0xFFFF]
-#     b2 = ram[(newPC + 2) & 0xFFFF]
-#     op = ram[newPC]
+    b1 = ram[(newPC + 1) & 0xFFFF]
+    b2 = ram[(newPC + 2) & 0xFFFF]
+    op = ram[newPC]
 
-#     print(f"{newPC:04X} {op:02X} ", end='')
+    print(f"{newPC:04X} {op:02X} ", end='')
 
-#     match am[op] :
-#         case  0x0 :                                                             # implied
-#             print(f"       {mn[op]}          ", end='')
-#         case  1 :                                                               # accumulator
-#             print(f"       {mn[op]} A        ", end='')
-#         case  2 :                                                               # immediate
-#             print(f"{b1:02X}     {mn[op]} #${b1:02X}     ", end='')
-#         case  3 :                                                               # zero page
-#             print(f"{b1:02X}     {mn[op]} ${b1:02X}      ", end='')
-#         case  4 :                                                               # zero page, X indexed
-#             print(f"{b1:02X}     {mn[op]} ${b1:02X},X    ", end='')
-#         case  5 :                                                               # zero page, Y indexed
-#             print(f"{b1:02X}     {mn[op]} ${b1:02X},Y    ", end='')
-#         case  6 :                                                               # relative
-#             print(f"{b1:02X}     {mn[op]} ${b1:02X}      ", end='')
-#         case  10 :                                                              # X indexed, indirect
-#             print(f"{b1:02X}     {mn[op]} (${b1:02X},X)  ", end='')
-#         case  11 :                                                              # indirect, Y indexed
-#             print(f"{b1:02X}     {mn[op]} (${b1:02X}),Y  ", end='')
-#         case  7 :                                                               # absolute
-#             print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X}    ", end='')
-#         case  8 :                                                               # absolute, X indexed
-#             print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X},X  ", end='')
-#         case  9 :                                                               # absolute, Y indexed
-#             print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X},Y  ", end='')
-#         case  12 :                                                              # indirect
-#             print(f"{b1:02X}{b2:02X}   {mn[op]} (${b2:02X}{b1:02X})  ", end='')
+    match am[op] :
+        case  0x0 :                                                             # implied
+            print(f"       {mn[op]}          ", end='')
+        case  1 :                                                               # accumulator
+            print(f"       {mn[op]} A        ", end='')
+        case  2 :                                                               # immediate
+            print(f"{b1:02X}     {mn[op]} #${b1:02X}     ", end='')
+        case  3 :                                                               # zero page
+            print(f"{b1:02X}     {mn[op]} ${b1:02X}      ", end='')
+        case  4 :                                                               # zero page, X indexed
+            print(f"{b1:02X}     {mn[op]} ${b1:02X},X    ", end='')
+        case  5 :                                                               # zero page, Y indexed
+            print(f"{b1:02X}     {mn[op]} ${b1:02X},Y    ", end='')
+        case  6 :                                                               # relative
+            print(f"{b1:02X}     {mn[op]} ${b1:02X}      ", end='')
+        case  10 :                                                              # X indexed, indirect
+            print(f"{b1:02X}     {mn[op]} (${b1:02X},X)  ", end='')
+        case  11 :                                                              # indirect, Y indexed
+            print(f"{b1:02X}     {mn[op]} (${b1:02X}),Y  ", end='')
+        case  7 :                                                               # absolute
+            print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X}    ", end='')
+        case  8 :                                                               # absolute, X indexed
+            print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X},X  ", end='')
+        case  9 :                                                               # absolute, Y indexed
+            print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X},Y  ", end='')
+        case  12 :                                                              # indirect
+            print(f"{b1:02X}{b2:02X}   {mn[op]} (${b2:02X}{b1:02X})  ", end='')
 
-#     newPC = cpu.run(1)
+    newPC = cpu.run(1)
 
-#     print(f"A={cpu.A:02X}  X={cpu.X:02X}  Y={cpu.Y:02X}  S={cpu.SP:02X}  *S={ram[0x0100 + cpu.SP]:02X}  {'N' if cpu.S else '-'}{'V' if cpu.V else '-'}{'U' if cpu.U else '-'}{'B' if cpu.B else '-'}{'D' if cpu.D else '-'}{'I' if cpu.I else '-'}{'Z' if cpu.Z else '-'}{'C' if cpu.C else '-'}", end='')
+    print(f"A={cpu.A:02X}  X={cpu.X:02X}  Y={cpu.Y:02X}  S={cpu.SP:02X}  *S={ram[0x0100 + cpu.SP]:02X}  {'N' if cpu.S else '-'}{'V' if cpu.V else '-'}{'U' if cpu.U else '-'}{'B' if cpu.B else '-'}{'D' if cpu.D else '-'}{'I' if cpu.I else '-'}{'Z' if cpu.Z else '-'}{'C' if cpu.C else '-'}", end='')
 
-#     print(f"   Cycles: {clock.ticks - oldticks}   Total: {clock.ticks}")
-#     oldticks = clock.ticks
+    print(f"   Cycles: {clock.ticks - oldticks}   Total: {clock.ticks}")
+    oldticks = clock.ticks
 
-#     if newPC == 0x3469 :                                                        # 6502_functional_test SUCCESS
-#         print(f"\nReached end of 6502_functional_test @ {newPC:04X} : SUCCESS !")
-#         break
+    if newPC == 0x3469 :                                                        # 6502_functional_test SUCCESS
+        print(f"\nReached end of 6502_functional_test @ {newPC:04X} : SUCCESS !")
+        break
 
-#     if newPC == oldPC :
-#         print(f"\n\nLoop detected @ {newPC:04X} - dumping memory ...\n\n")
-#         with open('memory.dump', 'wb') as f:
-#             f.write(mem.ram)
-#         exit()
+    if newPC == oldPC :
+        print(f"\n\nLoop detected @ {newPC:04X} - dumping memory ...\n\n")
+        with open('memory.dump', 'wb') as f:
+            f.write(mem.ram)
+        exit()
 
-#     oldPC = newPC
+    oldPC = newPC
 
 
 
 # Benchmarks
 # comment the above while loop and uncomment the line below :
 
-cpu.run(96240573)
+# cpu.run(96240573)
 
 # then, use the unix utility 'time' to evaluate the emulation speed
 
