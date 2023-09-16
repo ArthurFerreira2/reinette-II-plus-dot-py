@@ -121,7 +121,7 @@ while running :
                 if SDL_HasClipboardText() :
                     clipboardText = SDL_GetClipboardText()
                     for c in clipboardText :                                    # process char by char
-                        keyctrl.setKey(0x8D if c == 0x0A else c | 0x80)         # translate Line Feed to Carriage Ret while setting bit 7 on
+                        keyctrl.setKey(0x8D if c == 0x0A else c | 0x80)         # translates Line Feed to Carriage Return and sets bit 7 on
                     SDL_free(clipboardText)                                     # release the ressource
 
             elif event.key.keysym.sym == SDLK_F4 :                              # F4 -> toggle mute

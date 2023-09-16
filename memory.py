@@ -170,7 +170,7 @@ class Memory() :
     def readMem(self, address) :                                                # read
         if address < Memory.RAMSIZE :
             return self.ram[address]                                            # RAM
-        if address & 0xFF00 == 0xC000 :
+        if address & 0xFF00 == 0xC000 or address == 0xCFFF :
             return self.softSwitches(address)                                   # Soft Switches
         if address & 0xFF00 == Memory.SL6START :
             return self.sl6[address - Memory.SL6START]                          # disk][
