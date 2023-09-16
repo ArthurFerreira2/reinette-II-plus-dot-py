@@ -90,7 +90,8 @@ class Screen() :
 
         self.title = {"paused" : False,                                         # update the window title with dynamic data
                       "fps"    : self.FPS,
-                      "r/w"    : "",
+                      "r/w"    : '',
+                      "nib"    : '',
                       }
         self.titleFade = 30
 
@@ -211,7 +212,7 @@ class Screen() :
         if self.titleFade < 0 :
             self.title["r/w"] = ""
 
-        title = f"reinette II plus dot py    {self.title['fps']:05.2f}   {self.title['r/w']}"
+        title = f"reinette II plus dot py    {self.title['nib']}    {self.title['fps']:05.2f}    {self.title['r/w']}"
         SDL_SetWindowTitle(self.wdo, bytes(title, 'ascii'))
 
 
@@ -299,6 +300,7 @@ class Screen() :
                             self.previousBit[line][col + 2] = pbit              # set pbit
                             self.HiResCache[line][col + 2] = -1                 # invalidate video cache for the next dot
 
+
         #========================================================== GR VIDEO OUT
 
         elif not self.TEXT :                                                    # lOW RES GRAPHICS, mixed or not mixed
@@ -330,6 +332,7 @@ class Screen() :
                                                Screen.GR_COLOR[colorIdx][2],
                                                SDL_ALPHA_OPAQUE)
                         SDL_RenderFillRect(self.rdr, self.pixelGR)
+
 
         #======================================================== TEXT VIDEO OUT
 
@@ -363,6 +366,7 @@ class Screen() :
                         else :                                                  # it"s reverse of flashing off
                             SDL_RenderCopy(self.rdr, self.revCharTexture,
                                            self.charRects[glyph], self.dstRect)
+
 
     #============================================= SYNC TO FPS AND RENDER SCREEN
 

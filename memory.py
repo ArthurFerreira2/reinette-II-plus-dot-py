@@ -53,11 +53,13 @@ class Memory() :
             if address < 0xC050 :
                 if address == 0xC020 or address == 0xC030 :                     # SPEAKER, TAPEOUT
                     self.speaker.playSound()
+
                 elif address == 0xC000 :                                        # KEYBOARD
                     return self.keyctrl.getKey()
                 elif address == 0xC010 :                                        # KBDSTROBE
                     self.keyctrl.strobe()
                     return self.keyctrl.getKey()
+
             elif address < 0xC060 :
                 if address == 0xC050 :                                          # Graphics
                     self.screen.setTEXT(False)
@@ -135,11 +137,11 @@ class Memory() :
                     if self.disk.getWriteMode() :                               # writting dLatch
                         self.disk.write(self.DLATCH)
                         self.screen.setWindowTitle("r/w",
-                            f"WRITE[0x{self.disk.track:02X}, 0x{self.disk.nibble:04X}]")
+                            f"W[0x{self.disk.track:02X}, 0x{self.disk.nibble:04X}]")
                     else :                                                      # reading dLatch
                         self.DLATCH = self.disk.read()
                         self.screen.setWindowTitle("r/w",
-                            f"READ[0x{self.disk.track:02X}, 0x{self.disk.nibble:04X}]")
+                            f"R[0x{self.disk.track:02X}, 0x{self.disk.nibble:04X}]")
                     return self.DLATCH
                 elif address >= 0xC0E0 and address <= 0xC0E7 :                  # MOVE DRIVE HEAD
                     self.disk.stepMotor(address)
@@ -162,6 +164,7 @@ class Memory() :
 
         return 0                                                                # catch all
 
+
     #============================================================= MEMORY ACCESS
 
     def readMem(self, address) :                                                # read
@@ -174,7 +177,7 @@ class Memory() :
         if address >= Memory.ROMSTART :
             if not self.LCRD :
                 return self.rom[address - Memory.ROMSTART]                      # ROM
-            if self.LCBK2 and (address < 0xE000) :
+            if self.LCBK2 and address < 0xE000 :
                 return self.bk2[address - Memory.BK2START]                      # BK2
             return self.lgc[address - Memory.LGCSTART]                          # LC
         return 0                                                                # catch all
@@ -188,7 +191,7 @@ class Memory() :
             self.softSwitches(address, value)                                   # Soft Switches
             return
         if self.LCWR and (address >= Memory.ROMSTART) :
-            if self.LCBK2 and (address < 0xE000) :
+            if self.LCBK2 and address < 0xE000 :
                 self.bk2[address - Memory.BK2START] = value                     # BK2
                 return
             self.lgc[address - Memory.LGCSTART] = value                         # LC

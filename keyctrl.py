@@ -59,18 +59,46 @@ class Keyctrl() :
     keycode.SDLK_BACKQUOTE   : [0xE0, 0x00, 0xFE, 0x00]}
 
 
-    def __init__(self) :
-        self.key = 0                                                            # ascii value of key
 
-    def setKey(self,value) :
-        self.key = value
+
+    def __init__(self) :
+        self.keyQueue = []
+
+    def setKey(self, value) :
+        self.keyQueue.append(value)
+
+    def setKeyFromKeySym(self, keySym, modifiers) :
+        if keySym in Keyctrl.KEYMAP :
+            self.keyQueue.append(Keyctrl.KEYMAP[keySym][modifiers])
 
     def getKey(self) :                                                          # $C000
-        return self.key
+        if len(self.keyQueue) :
+            if self.keyQueue[0] <= 0x7F :
+                return self.keyQueue.pop(0)
+            else :
+                return self.keyQueue[0]
+        else :
+            return 0
 
     def strobe(self) :                                                          # $C010
-        self.key &= 0x7F
+        if len(self.keyQueue) :
+            self.keyQueue[0] &= 0x7F
 
-    def setKeyFromKeySym(self, keySym, modifier) :
-        if keySym in Keyctrl.KEYMAP :
-            self.key = Keyctrl.KEYMAP[keySym][modifier]
+
+
+
+    # def __init__(self) :
+    #     self.key = 0                                                            # ascii value of key
+
+    # def setKey(self,value) :
+    #     self.key = value
+
+    # def getKey(self) :                                                          # $C000
+    #     return self.key
+
+    # def strobe(self) :                                                          # $C010
+    #     self.key &= 0x7F
+
+    # def setKeyFromKeySym(self, keySym, modifier) :
+    #     if keySym in Keyctrl.KEYMAP :
+    #         self.key = Keyctrl.KEYMAP[keySym][modifier]

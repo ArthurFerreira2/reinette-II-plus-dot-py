@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import ctypes
 from sdl2 import *                                                              # pip install pysdl2 pysdl2-dll
 import puce6502, memory, keyctrl, screen, speaker, paddle, disk, clock
@@ -22,8 +22,8 @@ F4   : mute / unmute sound
 F5   : toggle monochrome (in HGR only)
 F6   : decrease zoom down to 1:1
 F7   : increase zoom up to 8:1
-F8   : decrease target FPS
-F9   : increase target FPS
+F8   : decrease desired FPS
+F9   : increase desired FPS
 F10  : toggle pause
 F11  : here is your RESET key
 F12  : power cycle
@@ -57,7 +57,7 @@ cpu = puce6502.Puce6502(mem.readMem, mem.writeMem)                              
 running = True
 paused  = False
 event = SDL_Event()
-ExecRate = clock.CPU_FREQUENCY / screen.FPS                                           # the apple II is clocked at 1023000.0 Hz
+ExecRate = clock.CPU_FREQUENCY / screen.FPS                                     # the apple II is clocked at 1023000.0 Hz
 
 
 while running :
@@ -66,9 +66,8 @@ while running :
 
     if not paused :
         cpu.run(ExecRate)                                                       # execute ExecRate instructions for 1/FPS of a second
-        # cProfile.run('cpu.run(ExecRate)')
 
-    limit = 100                                                                 # OVERCLOCKING CPU to speed-up disk access
+    limit = 100                                                                 # OVERCLOCKING CPU during disk access
     while disk.getMotorOn() and limit :
         cpu.run(10000)
         limit-=1
@@ -76,7 +75,6 @@ while running :
     #============================================================== UPDATE VIDEO
 
     screen.update(mem.ram)                                                      # refresh screen
-    # cProfile.run('screen.update(mem.ram)')
 
     #==================================================== CATCH USER INTERACTION
 
@@ -99,9 +97,14 @@ while running :
         elif event.type == SDL_DROPFILE :                                       # user dropped a file
             filename = event.drop.file                                          # get its full pathname
             disk.insertFloppy(filename)                                         # load the .nib into memory
+            floppyName = os.path.basename(filename[:-4]).decode('utf-8')        # extracting name from filename, removing the .nib extention
+            if floppyName.find('(') == -1 :
+                screen.setWindowTitle("nib", floppyName)                        # adding name to title, removing anygthing after the first '('
+            else :
+                screen.setWindowTitle("nib", floppyName[:floppyName.find('(')])     # adding name to title, removing anygthing after the first '('
             SDL_free(filename)                                                  # free filename memory
             paused = False                                                      # might already be the case
-            mem.writeMem(0x3F4, 0)                                              # unset the Power-UP byte
+            mem.writeMem(0x03F4, 0)                                             # unset the Power-UP byte
             cpu.rst()                                                           # and do a cold reset
 
         # ================================================= APPLICATION CONTROLS
@@ -118,12 +121,7 @@ while running :
                 if SDL_HasClipboardText() :
                     clipboardText = SDL_GetClipboardText()
                     for c in clipboardText :                                    # process char by char
-                        if c == 0x0A :
-                            keyctrl.setKey(0x8D)                                # translate Line Feed to Carriage Ret
-                            cpu.run(400000)                                     # give APPLESOFT some cycles to process each line
-                        else :
-                            keyctrl.setKey(c | 0x80)                            # set bit7
-                            cpu.run(10000)                                      # give some cycles to process each char
+                        keyctrl.setKey(0x8D if c == 0x0A else c | 0x80)         # translate Line Feed to Carriage Ret while setting bit 7 on
                     SDL_free(clipboardText)                                     # release the ressource
 
             elif event.key.keysym.sym == SDLK_F4 :                              # F4 -> toggle mute
@@ -158,7 +156,7 @@ while running :
             #================================================= EMULATED KEYBOARD
 
             keyctrl.setKeyFromKeySym(event.key.keysym.sym,
-                                     (1 if ctrl else 0) + (2 if shift else 0))
+                                     (1 if ctrl else 0) + (2 if shift else 0))  # taking into account the key modifiers
 
             #================================================= EMULATED JOYSTICK
 
@@ -189,7 +187,7 @@ while running :
 
 # stats.strip_dirs()
 # stats.sort_stats('time')
-# stats.dump_stats('prof_stats.dump')
+# stats.dump_stats('prof_stats.dump')                                             # snakeviz.exe prof_stats.dump
 # stats.print_stats()
 
 # stream.close()
