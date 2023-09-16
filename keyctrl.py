@@ -2,8 +2,7 @@ from sdl2 import keycode
 
 class Keyctrl() :
 
-    KEYMAP = {                                                                  # QWERTY US
-                 # MODIFIERS : [None, CTRL, SHFT, BOTH]
+    KEYMAP = {   # MODIFIERS : [None, CTRL, SHFT, BOTH]                         # QWERTY US
     keycode.SDLK_a           : [0xC1, 0x81, 0x00, 0x00],
     keycode.SDLK_b           : [0xC2, 0x82, 0x00, 0x00],
     keycode.SDLK_c           : [0xC3, 0x83, 0x00, 0x00],
@@ -59,8 +58,6 @@ class Keyctrl() :
     keycode.SDLK_BACKQUOTE   : [0xE0, 0x00, 0xFE, 0x00]}
 
 
-
-
     def __init__(self) :
         self.keyQueue = []
 
@@ -71,7 +68,7 @@ class Keyctrl() :
         if keySym in Keyctrl.KEYMAP :
             self.keyQueue.append(Keyctrl.KEYMAP[keySym][modifiers])
 
-    def getKey(self) :                                                          # $C000
+    def getKey(self) :                                                          # sofswitch $C000
         if len(self.keyQueue) :
             if self.keyQueue[0] <= 0x7F :
                 return self.keyQueue.pop(0)
@@ -80,25 +77,6 @@ class Keyctrl() :
         else :
             return 0
 
-    def strobe(self) :                                                          # $C010
+    def strobe(self) :                                                          # sofswitch $C010
         if len(self.keyQueue) :
             self.keyQueue[0] &= 0x7F
-
-
-
-
-    # def __init__(self) :
-    #     self.key = 0                                                            # ascii value of key
-
-    # def setKey(self,value) :
-    #     self.key = value
-
-    # def getKey(self) :                                                          # $C000
-    #     return self.key
-
-    # def strobe(self) :                                                          # $C010
-    #     self.key &= 0x7F
-
-    # def setKeyFromKeySym(self, keySym, modifier) :
-    #     if keySym in Keyctrl.KEYMAP :
-    #         self.key = Keyctrl.KEYMAP[keySym][modifier]

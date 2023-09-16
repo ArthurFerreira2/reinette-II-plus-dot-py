@@ -17,11 +17,11 @@ class Speaker() :
 
     def __init__(self) :
         """
-        initialise the sdl2 audio device and allocate buffers
+        Initialise the sdl2 audio device and allocate buffers
 
-        allocate 3 buffers for the -volume, 0 and +volumes values
-        inits sdl audio devices, signed 8 bits, 88KHz ...
-        set pause (muted) to False
+        Allocate 3 buffers for the -volume, 0 and +volume values.
+        Inits sdl audio devices (signed 8 bits, 88KHz ...).
+        And set pause (muted) to False
         """
 
         self.buffer = []                                                        # three audio buffers,
@@ -55,19 +55,20 @@ class Speaker() :
 
     def playSound(self) :
         """
-        plays sound
+        Plays sound
 
-        calculates the time elapsed since the last speaker toggle
-        if that time is too long, plays silence
-        otherwise plays a positive or negative square wave
+        Calculates the period elapsed since the last speaker toggle.
+        If that period is too long, plays silence.
+        Otherwise sends alternatively a positive or negative signal
+        during that duration.
         """
 
         self.SPKR = 0 if self.SPKR else 1                                       # toggle speaker state
-        length = int((clock.ticks - self.previousTick) / Speaker.RATE)          # lenght of the square wave
+        duration = int((clock.ticks - self.previousTick) / Speaker.RATE)          # lenght of the square wave
         self.previousTick = clock.ticks
 
         if not self.muted :
-            if length > Speaker.BUFFER_LENGHT :
+            if duration > Speaker.BUFFER_LENGHT :
                 audio.SDL_QueueAudio(self.device, self.buffer[2], Speaker.BUFFER_LENGHT)  # silence
             else :
-                audio.SDL_QueueAudio(self.device, self.buffer[self.SPKR], length)
+                audio.SDL_QueueAudio(self.device, self.buffer[self.SPKR], duration)

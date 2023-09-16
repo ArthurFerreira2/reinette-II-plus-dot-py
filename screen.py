@@ -91,7 +91,7 @@ class Screen() :
         self.title = {"paused" : False,                                         # update the window title with dynamic data
                       "fps"    : self.FPS,
                       "r/w"    : '',
-                      "nib"    : '',
+                      "nib"    : 'no floopy',
                       }
         self.titleFade = 30
 
@@ -189,8 +189,9 @@ class Screen() :
                                          ctypes.POINTER(Sint16)),
                              280 * 4 * self.zoom)
 
-        d = datetime.now().strftime("%Y-%m-%d-%H-%M-%S").encode('ASCII')        # forge the filename
-        SDL_SaveBMP(sshot, b"screenshots//" + d + b".bmp")                      # save under the screenshots folder
+        date = datetime.now().strftime("-%Y-%m-%d-%H-%M-%S")                    # forge the filename
+        filename = f"screenshots//{self.title['nib']}{date}.bmp"
+        SDL_SaveBMP(sshot, bytes(filename, 'ascii'))                            # save under the screenshots folder
         SDL_FreeSurface(sshot)                                                  # release the surface
 
 
@@ -204,7 +205,7 @@ class Screen() :
 
     def updateWindowTitle(self) :
         if self.title["paused"] :
-            title = 'reinette II plus dot py    *PAUSED*'
+            title = 'reinette II plus dot py   *PAUSED*'
             SDL_SetWindowTitle(self.wdo, bytes(title, 'ascii'))
             return
 
@@ -212,7 +213,7 @@ class Screen() :
         if self.titleFade < 0 :
             self.title["r/w"] = ""
 
-        title = f"reinette II plus dot py    {self.title['nib']}    {self.title['fps']:05.2f}    {self.title['r/w']}"
+        title = f"reinette II plus dot py   {self.title['fps']:05.2f} FPS   {self.title['r/w']}   {self.title['nib']}"
         SDL_SetWindowTitle(self.wdo, bytes(title, 'ascii'))
 
 

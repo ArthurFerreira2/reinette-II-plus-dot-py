@@ -57,20 +57,18 @@ cpu = puce6502.Puce6502(mem.readMem, mem.writeMem)                              
 running = True
 paused  = False
 event = SDL_Event()
-ExecRate = clock.CPU_FREQUENCY / screen.FPS                                     # the apple II is clocked at 1023000.0 Hz
-
 
 while running :
 
     #=================================================== PROCESS SOME CPU CYCLES
 
     if not paused :
-        cpu.run(ExecRate)                                                       # execute ExecRate instructions for 1/FPS of a second
+        cpu.run(clock.CPU_FREQUENCY / screen.FPS)                               # execute instructions until we reach the number clock cycles for one frame
 
-    limit = 100                                                                 # OVERCLOCKING CPU during disk access
-    while disk.getMotorOn() and limit :
-        cpu.run(10000)
-        limit-=1
+    limit = 50
+    while disk.getMotorOn() and limit :                                         # OVERCLOCKING CPU during disk access
+        cpu.run(10000)                                                          # execute instruction during 10000 extra clock cyles
+        limit-=1                                                                # allow key inputs and screen refresh in case the motor won't stop
 
     #============================================================== UPDATE VIDEO
 
