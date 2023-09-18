@@ -47,6 +47,7 @@ keyctrl = keyctrl.Keyctrl()                                                     
 disk = disk.Disk()                                                              # instanciate one disk drive
 if len(sys.argv) > 1 :                                                          # load floppy if provided at command line
     disk.insertFloppy(sys.argv[1])
+    screen.setWindowTitle("nib", os.path.basename(sys.argv[1][:-4]))            # adding name to title, removing the .nib extension
 
 mem = memory.Memory(disk, keyctrl, paddle0, paddle1, screen, speaker)           # memory has side effects on peripherals through soft swiches
 cpu = puce6502.Puce6502(mem.readMem, mem.writeMem)                              # cpu instantiation with pointer to functions to read and write  memory

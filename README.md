@@ -7,7 +7,7 @@ An easy to use, yet efficient, Apple II plus emulator in python
 ## Features
 
 - Language Card (64KB of RAM)
-- All video modes at 60 fps
+- All video modes at 30 fps
 - window resize by integer factors
 - Single key screenshots
 - disk ][
