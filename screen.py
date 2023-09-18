@@ -84,7 +84,7 @@ class Screen() :
         self.zoom = 2
         self.monochrome = False
 
-        self.FPS = 30.0                                                         # NTSC Frame Rate
+        self.FPS = 60.0                                                         # NTSC Frame Rate
         self.frameStart = 0
         self.frameNumber = 0                                                    # TEXT cursor flashes at 2Hz
 
