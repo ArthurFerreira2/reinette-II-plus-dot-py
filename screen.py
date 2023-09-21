@@ -68,10 +68,8 @@ class Screen() :
         self.MIXED = False                                                      # $C052 CLRMIXED  / $C053 SETMIXED
         self.PAGE2 = False                                                      # $C054 PAGE2 off / $C055 PAGE2 on
         self.HIRES = False                                                      # $C056 GR        / $C057 HGR
-        self.currentMode = 0
-        self.previousMode = 0
 
-        self.oldMode = currentMode = 0                                          # to flush the video caches on video mode change
+        self.previousMode = self.currentMode = 0                                # used to flush the video caches on mode change
         self.TextCache   = [[-1 for x in range(40)] for y in range( 24)]        # video caches
         self.LoResCache  = [[-1 for x in range(40)] for y in range( 24)]
         self.HiResCache  = [[-1 for x in range(40)] for y in range(192)]
@@ -84,14 +82,14 @@ class Screen() :
         self.zoom = 2
         self.monochrome = False
 
-        self.FPS = 30.0                                                         # NTSC Frame Rate
+        self.FPS = 60.0                                                         # NTSC Frame Rate
         self.frameStart = 0
         self.frameNumber = 0                                                    # TEXT cursor flashes at 2Hz
 
         self.title = {"paused" : False,                                         # update the window title with dynamic data
                       "fps"    : self.FPS,
                       "r/w"    : '',
-                      "nib"    : 'no floopy',
+                      "nib"    : 'no floppy',
                       }
         self.titleFade = 30
 
@@ -99,8 +97,9 @@ class Screen() :
 
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)
         self.wdo = SDL_CreateWindow(b"reinette II plus dot py",
-                                    SDL_WINDOWPOS_CENTERED,
-                                    SDL_WINDOWPOS_CENTERED,
+                                    100,100,
+                                    # SDL_WINDOWPOS_CENTERED,
+                                    # SDL_WINDOWPOS_CENTERED,
                                     280 * self.zoom, 192 * self.zoom,
                                     SDL_WINDOW_OPENGL)
 
@@ -140,39 +139,28 @@ class Screen() :
 
     def setTEXT(self, value) :
         self.TEXT = value
-        if value :
-            self.currentMode = 0
-        else :
-            self.currentMode = 1
+        self.currentMode = 0 if value else 1
+
+    def setMIXED(self, value) :
+        self.MIXED = value
+        self.currentMode = 2 if value else 3
+
+    def setHIRES(self, value) :
+        self.HIRES = value
+        self.currentMode = 4 if value else 5
+
+    def setPAGE2(self, value) :
+        self.PAGE2 = value
+
 
     def getTEXT(self) :
         return self.TEXT
 
-
-    def setMIXED(self, value) :
-        self.MIXED = value
-        if value :
-            self.currentMode = 2
-        else :
-            self.currentMode = 3
-
     def getMIXED(self) :
         return self.MIXED
 
-
-    def setHIRES(self, value) :
-        self.HIRES = value
-        if value :
-            self.currentMode = 4
-        else :
-            self.currentMode = 5
-
     def getHIRES(self) :
         return self.HIRES
-
-
-    def setPAGE2(self, value) :
-        self.PAGE2 = value
 
     def getPAGE2(self) :
         return self.PAGE2
@@ -185,9 +173,8 @@ class Screen() :
         SDL_RenderReadPixels(self.rdr,                                          # copy the screen into the surface
                              None,
                              SDL_GetWindowPixelFormat(self.wdo) ,
-                             ctypes.cast(sshot.contents.pixels,
-                                         ctypes.POINTER(Sint16)),
-                             280 * 4 * self.zoom)
+                             ctypes.cast(sshot.contents.pixels, ctypes.POINTER(Sint16)),
+                             280 * 4 * self.zoom)                               # 4 bytes per pyxel (RGBA)
 
         date = datetime.now().strftime("-%Y-%m-%d-%H-%M-%S")                    # forge the filename
         filename = f"screenshots//{self.title['nib']}{date}.bmp"
@@ -221,7 +208,7 @@ class Screen() :
 
     def toggleMonochrome(self) :
         self.monochrome = not self.monochrome
-        self.oldMode = 9
+        self.previousMode = 9
 
 
     #============================================================= WINDOW RESIZE
@@ -235,7 +222,7 @@ class Screen() :
 
         SDL_SetWindowSize(self.wdo, 280 * self.zoom, 192 * self.zoom)           # update window size
         SDL_RenderSetScale(self.rdr, self.zoom, self.zoom)                      # update renderer size
-        self.oldMode = 9                                                        # provoke a video cache flush
+        self.previousMode = 9                                                   # provoke a video cache flush
 
 
     #============================================================ VIDEO RENDERER
@@ -244,16 +231,16 @@ class Screen() :
 
         #===================================================== CLEAR VIDEO CACHE
 
-        if self.oldMode != self.currentMode :                                   # Clear the video caches when video mode change
+        if self.previousMode != self.currentMode :                              # Clear the video caches when video mode change
             self.TextCache   = [[-1 for x in range(40)] for y in range( 24)]
             self.LoResCache  = [[-1 for x in range(40)] for y in range( 24)]
             self.HiResCache  = [[-1 for x in range(40)] for y in range(192)]
             self.previousBit = [[ 0 for x in range(40)] for y in range(192)]
-            self.oldMode = self.currentMode
+            self.previousMode = self.currentMode
 
         #========================================================= HGR VIDEO OUT
 
-        if not self.TEXT and self.HIRES :                                       # HIGH RES GRAPHICS, mixed or not mixed
+        if not self.TEXT and self.HIRES :                                       # HIGH RES GRAPHICS, mixed or not
             bits=[0] * 16
             vRamBase = 0x2000 + self.PAGE2 * 0x2000
             lastLine = 160 if self.MIXED else 192
@@ -304,7 +291,7 @@ class Screen() :
 
         #========================================================== GR VIDEO OUT
 
-        elif not self.TEXT :                                                    # lOW RES GRAPHICS, mixed or not mixed
+        elif not self.TEXT :                                                    # lOW RES GRAPHICS, mixed or not
             vRamBase = 0x400 + self.PAGE2 * 0x0400
             lastLine = 20 if self.MIXED else 24
 
@@ -341,7 +328,7 @@ class Screen() :
             vRamBase = 0x400 + self.PAGE2 * 0x0400
             firstLine = 0 if self.TEXT else 20
             self.frameNumber = (self.frameNumber + 1) % self.FPS                # for flashing characters (including the cursor)
-            flashing = self.frameNumber % self.FPS > self.FPS / 2               # flashing on phase
+            flashing = self.frameNumber % self.FPS > self.FPS / 2               # flashing twice a second
 
             for col in range(0, 40) :                                           # for each column
                 self.dstRect.x = col * 7
@@ -361,7 +348,8 @@ class Screen() :
                         if glyph < 0x20 :
                             glyph |= 0x40
 
-                        if (glyphAttr==Screen.NORMAL) or (glyphAttr==Screen.FLASH and flashing) :
+                        if (glyphAttr == Screen.NORMAL) or \
+                           (glyphAttr == Screen.FLASH and flashing) :
                             SDL_RenderCopy(self.rdr, self.normCharTexture,
                                            self.charRects[glyph], self.dstRect)
                         else :                                                  # it"s reverse of flashing off

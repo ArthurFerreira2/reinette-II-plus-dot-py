@@ -1,6 +1,6 @@
 import clock
 
-class Paddle() :                                                                # digital controller
+class Paddle() :
 
     def __init__(self) :
         self.pushButton = 0                                                     # Push Button
@@ -24,18 +24,17 @@ class Paddle() :                                                                
 
     def read(self) :
         self.countdown -= (clock.ticks - self.countdownTrigger) / 5.6           # decreases the countdown
-        if self.countdown <= 0 :
-            self.countdown = 0                                                  # timeout
+        if self.countdown <= 0 :                                                # timeout
             return 0x00                                                         # returns 0
         return 0x80                                                             # not timeout, return something with the MSB set
 
 
-    def update(self, value) :
-        self.position = value
+    def update(self, value) :                                                   # called from event loop when a related
+        self.position = value                                                   # key has been pressed or released
 
 
 """
-paste this (F3) to check your changes
+paste this (F3) to test your changes
 
 NEW
 10 A =  PDL (0)

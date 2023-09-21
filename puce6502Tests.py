@@ -88,8 +88,6 @@ def readMem(address) :
 def writeMem(address, value) :
     ram[address] = value
 
-
-
 open('6502_functional_test.bin', 'rb').readinto(ram)
 
 cpu = puce6502.Puce6502(readMem, writeMem)
@@ -226,5 +224,4 @@ while(True) :
     user    0m0.015s
     sys     0m0.000s
 
-    kudos to 'phire' : https://www.reddit.com/r/EmuDev/comments/16f021n/comment/k02qnl8/?utm_source=share&utm_medium=web2x&context=3
 """

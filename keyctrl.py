@@ -60,23 +60,27 @@ class Keyctrl() :
 
     def __init__(self) :
         self.keyQueue = []
+        self.key = 0x00
+
 
     def setKey(self, value) :
         self.keyQueue.append(value)
+
 
     def setKeyFromKeySym(self, keySym, modifiers) :
         if keySym in Keyctrl.KEYMAP :
             self.keyQueue.append(Keyctrl.KEYMAP[keySym][modifiers])
 
-    def getKey(self) :                                                          # sofswitch $C000
+
+    def getKey(self) :                                                          # softswitch $C000
         if len(self.keyQueue) :
             if self.keyQueue[0] <= 0x7F :
-                return self.keyQueue.pop(0)
+                self.key = self.keyQueue.pop(0)
             else :
-                return self.keyQueue[0]
-        else :
-            return 0
+                self.key = self.keyQueue[0]
+        return self.key
 
-    def strobe(self) :                                                          # sofswitch $C010
+
+    def strobe(self) :                                                          # softswitch $C010
         if len(self.keyQueue) :
             self.keyQueue[0] &= 0x7F
