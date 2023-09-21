@@ -4,6 +4,17 @@
 An easy to use, yet efficient, Apple II plus emulator in python
 
 
+
+![demo](assets/demo.gif)  
+  
+Copy an applesoft program and paste it using F3.   
+Drag'n drop a floppy image will make the computer load it.  
+The title bar shows :
+- The frame rate
+- If active, the drive head position (track/nibble) with R/W indicating if reading or writting  
+- The name of the floppy if one has been loaded.  
+
+
 ## Features
 
 - Language Card (64KB of RAM)

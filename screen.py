@@ -97,9 +97,8 @@ class Screen() :
 
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)
         self.wdo = SDL_CreateWindow(b"reinette II plus dot py",
-                                    100,100,
-                                    # SDL_WINDOWPOS_CENTERED,
-                                    # SDL_WINDOWPOS_CENTERED,
+                                    SDL_WINDOWPOS_CENTERED,
+                                    SDL_WINDOWPOS_CENTERED,
                                     280 * self.zoom, 192 * self.zoom,
                                     SDL_WINDOW_OPENGL)
 
