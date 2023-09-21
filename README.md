@@ -11,7 +11,7 @@ Copy an applesoft program and paste it using F3.
 Drag'n drop a floppy image will make the computer load it.  
 The title bar shows :
 - The frame rate
-- If active, the drive head position (track/nibble) with R/W indicating if reading or writting  
+- If active, the drive head position (track/nibble) with R/W indicating if reading or writing  
 - The name of the floppy if one has been loaded.  
 
 
