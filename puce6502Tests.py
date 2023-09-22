@@ -2,7 +2,7 @@
 
 """
   Tests for puce6502, a MOS 6502 cpu emulator
-  Last modified 21st of June 2023 - python version
+  Last modified 21st of september 2023 - python version
   Copyright (c) 2023 Arthur Ferreira (arthur.ferreira2@gmail.com)
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,11 +33,11 @@
   and troubleshooting. It is not required for normal operation
 
   It is provided so you can check the accuracy of the emultaion, modify it to
-  to your will and test your changes
+  to your will and verify your changes
 """
 
-import puce6502
-import clock
+import puce6502, clock
+import sys
 
 # mnemonics
 mn = [
@@ -99,79 +99,77 @@ oldPC = cpu.PC
 newPC = cpu.PC                                                                  # for detecting the BNE $FE when a test fails
 
 
-# if you want to check the accuracy of the emulation, uncomment the while loop :
+if len(sys.argv)  != 2 :
+    print("Usage : puce6502Tests.py a|b", end = '\n\n')
+    print("where option a runs the functonnal test to check the Accurary of the emulation")
+    print("and option b runs the functonnal tests with no output for Benchmarking (total of 96240573 clock cycles)")
+    exit()
 
-while(True) :
+if sys.argv[1] == 'a' :
 
-    b1 = ram[(newPC + 1) & 0xFFFF]
-    b2 = ram[(newPC + 2) & 0xFFFF]
-    op = ram[newPC]
+    while(True) :
 
-    print(f"{newPC:04X} {op:02X} ", end='')
+        b1 = ram[(newPC + 1) & 0xFFFF]
+        b2 = ram[(newPC + 2) & 0xFFFF]
+        op = ram[newPC]
 
-    match am[op] :
-        case  0x0 :                                                             # implied
-            print(f"       {mn[op]}          ", end='')
-        case  1 :                                                               # accumulator
-            print(f"       {mn[op]} A        ", end='')
-        case  2 :                                                               # immediate
-            print(f"{b1:02X}     {mn[op]} #${b1:02X}     ", end='')
-        case  3 :                                                               # zero page
-            print(f"{b1:02X}     {mn[op]} ${b1:02X}      ", end='')
-        case  4 :                                                               # zero page, X indexed
-            print(f"{b1:02X}     {mn[op]} ${b1:02X},X    ", end='')
-        case  5 :                                                               # zero page, Y indexed
-            print(f"{b1:02X}     {mn[op]} ${b1:02X},Y    ", end='')
-        case  6 :                                                               # relative
-            print(f"{b1:02X}     {mn[op]} ${b1:02X}      ", end='')
-        case  10 :                                                              # X indexed, indirect
-            print(f"{b1:02X}     {mn[op]} (${b1:02X},X)  ", end='')
-        case  11 :                                                              # indirect, Y indexed
-            print(f"{b1:02X}     {mn[op]} (${b1:02X}),Y  ", end='')
-        case  7 :                                                               # absolute
-            print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X}    ", end='')
-        case  8 :                                                               # absolute, X indexed
-            print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X},X  ", end='')
-        case  9 :                                                               # absolute, Y indexed
-            print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X},Y  ", end='')
-        case  12 :                                                              # indirect
-            print(f"{b1:02X}{b2:02X}   {mn[op]} (${b2:02X}{b1:02X})  ", end='')
+        print(f"{newPC:04X} {op:02X} ", end='')
 
-    newPC = cpu.run(1)
+        match am[op] :
+            case  0x0 :                                                         # implied
+                print(f"       {mn[op]}          ", end='')
+            case  1 :                                                           # accumulator
+                print(f"       {mn[op]} A        ", end='')
+            case  2 :                                                           # immediate
+                print(f"{b1:02X}     {mn[op]} #${b1:02X}     ", end='')
+            case  3 :                                                           # zero page
+                print(f"{b1:02X}     {mn[op]} ${b1:02X}      ", end='')
+            case  4 :                                                           # zero page, X indexed
+                print(f"{b1:02X}     {mn[op]} ${b1:02X},X    ", end='')
+            case  5 :                                                           # zero page, Y indexed
+                print(f"{b1:02X}     {mn[op]} ${b1:02X},Y    ", end='')
+            case  6 :                                                           # relative
+                print(f"{b1:02X}     {mn[op]} ${b1:02X}      ", end='')
+            case  10 :                                                          # X indexed, indirect
+                print(f"{b1:02X}     {mn[op]} (${b1:02X},X)  ", end='')
+            case  11 :                                                          # indirect, Y indexed
+                print(f"{b1:02X}     {mn[op]} (${b1:02X}),Y  ", end='')
+            case  7 :                                                           # absolute
+                print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X}    ", end='')
+            case  8 :                                                           # absolute, X indexed
+                print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X},X  ", end='')
+            case  9 :                                                           # absolute, Y indexed
+                print(f"{b1:02X}{b2:02X}   {mn[op]} ${b2:02X}{b1:02X},Y  ", end='')
+            case  12 :                                                          # indirect
+                print(f"{b1:02X}{b2:02X}   {mn[op]} (${b2:02X}{b1:02X})  ", end='')
 
-    print(f"A={cpu.A:02X}  X={cpu.X:02X}  Y={cpu.Y:02X}  S={cpu.SP:02X}  *S={ram[0x0100 + cpu.SP]:02X}  {'N' if cpu.S else '-'}{'V' if cpu.V else '-'}{'U' if cpu.U else '-'}{'B' if cpu.B else '-'}{'D' if cpu.D else '-'}{'I' if cpu.I else '-'}{'Z' if cpu.Z else '-'}{'C' if cpu.C else '-'}", end='')
+        newPC = cpu.run(1)
 
-    print(f"   Cycles: {clock.ticks - oldticks}   Total: {clock.ticks}")
-    oldticks = clock.ticks
+        print(f"A={cpu.A:02X}  X={cpu.X:02X}  Y={cpu.Y:02X}  S={cpu.SP:02X}  *S={ram[0x0100 + cpu.SP]:02X}  {'N' if cpu.S else '-'}{'V' if cpu.V else '-'}{'U' if cpu.U else '-'}{'B' if cpu.B else '-'}{'D' if cpu.D else '-'}{'I' if cpu.I else '-'}{'Z' if cpu.Z else '-'}{'C' if cpu.C else '-'}", end='')
 
-    if newPC == 0x3469 :                                                        # 6502_functional_test SUCCESS
-        print(f"\nReached end of 6502_functional_test @ {newPC:04X} : SUCCESS !")
-        break
+        print(f"   Cycles: {clock.ticks - oldticks}   Total: {clock.ticks}")
+        oldticks = clock.ticks
 
-    if newPC == oldPC :
-        print(f"\n\nLoop detected @ {newPC:04X} - dumping memory ...\n\n")
-        with open('memory.dump', 'wb') as f:
-            f.write(mem.ram)
-        exit()
+        if newPC == 0x3469 :                                                    # 6502_functional_test SUCCESS
+            print(f"\nReached end of 6502_functional_test @ {newPC:04X} : SUCCESS !")
+            break
 
-    oldPC = newPC
+        if newPC == oldPC :                                                     # dump memory to file in case a loop is detected
+            print(f"\n\nLoop detected @ {newPC:04X} - dumping memory ...\n\n")
+            with open('memory.dump', 'wb') as f:
+                f.write(mem.ram)
+            exit()
 
+        oldPC = newPC
 
+else :                                                                           # Benchmarks
 
-# Benchmarks
-# comment the above while loop and uncomment the line below :
-
-# cpu.run(96240573)
-
-# then, use the unix utility 'time' to evaluate the emulation speed
+    cpu.run(96240573)
 
 
 
 """
     # test results :
-
-
-    ## Using 6502_functional_test.bin :
 
     <--->
     3457 69 55     ADC #$55       A=AA  X=0E  Y=FF  S=FF  *S=34  NVUB----   Cycles: 2   Total: 96240555
@@ -197,7 +195,7 @@ while(True) :
                             ; S U C C E S S ************************************************
 
 
-    ## "Benchmarks", using a core i5-8365u laptop
+    # "Benchmarks", using a core i5-8365u laptop
 
     $ time python ./puce6502Tests.py
 

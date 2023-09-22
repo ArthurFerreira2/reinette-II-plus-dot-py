@@ -3,6 +3,7 @@
 import sys, os
 import ctypes
 from sdl2 import *                                                              # pip install pysdl2 pysdl2-dll
+
 import puce6502, memory, keyctrl, screen, speaker, paddle, disk, clock
 
 # import cProfile
@@ -162,13 +163,13 @@ while running :
                 screen.FPS += 1
                 continue
 
-            elif event.key.keysym.sym == SDLK_F10 :
-                paused = not paused                                             # F10 -> toggle pause
+            elif event.key.keysym.sym == SDLK_F10 :                             # F10 -> toggle pause
+                paused = not paused
                 screen.setWindowTitle("paused", paused)
                 continue
 
-            elif event.key.keysym.sym == SDLK_F11 :
-                cpu.rst()                                                       # F11 -> reset the cpu
+            elif event.key.keysym.sym == SDLK_F11 :                             # F11 -> reset the cpu
+                cpu.rst()
                 continue
 
             elif event.key.keysym.sym == SDLK_F12 :                             # F12 -> power cycle

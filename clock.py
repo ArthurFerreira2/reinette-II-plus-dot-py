@@ -1,7 +1,7 @@
 # dirty, but it actually works pretty well
 # this variable is shared between cpu (producer), speaker and paddle (consumers)
 # to provide a way to measure a duration between two events
-# the delta between two value is the number of clock cycles that were elapsed.
+# the delta between two values is the number of clock cycles that have elapsed.
 
 ticks = 0
 

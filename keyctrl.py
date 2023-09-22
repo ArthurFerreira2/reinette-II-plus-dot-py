@@ -58,6 +58,13 @@ class Keyctrl() :
     keycode.SDLK_BACKQUOTE   : [0xE0, 0x00, 0xFE, 0x00]}
 
 
+    """
+        The Apple II didn't had a key buffer.
+        I'm using one for two reasons :
+        - let the cpu catch all key pressed as input and cpu execution are desynchronized
+        - to allow copy paste : I emit all characters as if they were typed on the keyboard
+    """
+
     def __init__(self) :
         self.keyQueue = []
         self.key = 0x00
