@@ -23,7 +23,7 @@ The title bar shows :
 - Single key screenshots
 - disk ][
 - Drag'n drop floppy image files (.nib format only)
-- Joysitck
+- Joystick
 - Sound
 - etc...
 
